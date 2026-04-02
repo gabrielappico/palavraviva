@@ -46,8 +46,8 @@ Respeitar estas dimensões é estritamente OBRIGATÓRIO. *(Já criamos pelo Flut
 ## 4. Políticas e Privacidade
 Cole exatamente isso lá:
 
-* **URL da Política de Privacidade:** `[Colevação o link do Notion/Docs da sua Política se tiver, ou crie uma similar a debaixo]`
-* **URL de Exclusão de Conta:** `[Pegue o link público do documento "Política de Exclusão" que criamos na conversa anterior]`
+* **URL da Política de Privacidade:** Como o Google não aceita arquivos locais, você precisará hospedar o arquivo **`politica_privacidade.html`** (que acabei de criar na raiz da sua pasta) de forma pública na internet. Se você não tem um site da Appi Company, suba gratuitamente esse arquivo em ferramentas online como o GitHub Pages, Firebase Hosting, Netlify ou cole o conteúdo no Google Sites ou Notion. Depois, cole o link gerado lá!
+* **URL de Exclusão de Conta:** Assim como o item acima, pegue o arquivo **`politica_exclusao.html`** que acabei de criar lindamente formatado para você, suba de forma pública e informe a URL ao Google Play Console.
 * **Declaração de Anúncios:** Marque **"NÃO"** (pois o app não contém banners de admob ou publicidade agressiva).
 * **Apps de Notícias:** Marque **"NÃO"** (o app não é um jornal).
 * **Covid-19:** Marque **"Meu app não é publicamente sobre Covid-19"**.

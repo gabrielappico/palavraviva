@@ -1,0 +1,39 @@
+﻿commit 4cdf1822ff7d1a16dc279b59f2d70c32cb0b1b59
+Author: gabriel moura <gabriel@appicompany.com>
+Date:   Thu Apr 2 14:17:48 2026 -0300
+
+    feat: initial commit - Palavra Viva Flutter app
+    
+    - Flutter app with Supabase authentication
+    - Bible daily verse feature with OpenAI integration
+    - Journal (reflex├Áes) feature
+    - Prayer feature
+    - Quiz feature
+    - Settings and user profile
+    - Terms and privacy screen
+    - Splash screen with persistent auth session
+
+diff --git a/palavra_viva/android/app/src/main/res/values/styles.xml b/palavra_viva/android/app/src/main/res/values/styles.xml
+new file mode 100644
+index 0000000..cb1ef88
+--- /dev/null
++++ b/palavra_viva/android/app/src/main/res/values/styles.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
++    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
++        <!-- Show a splash screen on the activity. Automatically removed when
++             the Flutter engine draws its first frame -->
++        <item name="android:windowBackground">@drawable/launch_background</item>
++    </style>
++    <!-- Theme applied to the Android Window as soon as the process has started.
++         This theme determines the color of the Android Window while your
++         Flutter UI initializes, as well as behind your Flutter UI while its
++         running.
++
++         This Theme is only used starting with V2 of Flutter's Android embedding. -->
++    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
++        <item name="android:windowBackground">?android:colorBackground</item>
++    </style>
++</resources>
