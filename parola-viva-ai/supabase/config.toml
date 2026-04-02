@@ -1,0 +1,22 @@
+project_id = "zhxxxzgbhldpctirtkdz"
+
+[functions.chat-ai]
+verify_jwt = false
+
+[functions.generate-prayer]
+verify_jwt = false
+
+[functions.generate-sermon]
+verify_jwt = false
+
+[functions.generate-dynamic]
+verify_jwt = false
+
+[functions.recommend-content]
+verify_jwt = false
+
+[functions.search-bible]
+verify_jwt = false
+
+[functions.confession-counsel]
+verify_jwt = false

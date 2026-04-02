@@ -53,3 +53,7 @@ app.*.map.json
 
 # Flutter plugins
 .flutter-plugins
+
+# Build logs
+build_log*.txt
+*.log

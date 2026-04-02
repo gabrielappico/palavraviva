@@ -1,0 +1,171 @@
+﻿> Task :gradle:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle:compileKotlin UP-TO-DATE
+> Task :gradle:compileJava NO-SOURCE
+> Task :gradle:compileGroovy NO-SOURCE
+> Task :gradle:pluginDescriptors UP-TO-DATE
+> Task :gradle:processResources UP-TO-DATE
+> Task :gradle:classes UP-TO-DATE
+> Task :gradle:jar UP-TO-DATE
+
+> Configure project :app
+WARNING: The option setting 'android.overridePathCheck=true' is experimental.
+The current default is 'false'.
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
+> Task :app:cleanMergeReleaseAssets
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:compileFlutterBuildRelease UP-TO-DATE
+> Task :app:packJniLibsflutterBuildRelease UP-TO-DATE
+> Task :app_links:preBuild UP-TO-DATE
+> Task :app_links:preReleaseBuild UP-TO-DATE
+> Task :app_links:mergeReleaseShaders UP-TO-DATE
+> Task :app_links:compileReleaseShaders NO-SOURCE
+> Task :app_links:generateReleaseAssets UP-TO-DATE
+> Task :app_links:mergeReleaseAssets UP-TO-DATE
+> Task :flutter_local_notifications:preBuild UP-TO-DATE
+> Task :flutter_local_notifications:preReleaseBuild UP-TO-DATE
+> Task :flutter_local_notifications:mergeReleaseShaders UP-TO-DATE
+> Task :flutter_local_notifications:compileReleaseShaders NO-SOURCE
+> Task :flutter_local_notifications:generateReleaseAssets UP-TO-DATE
+> Task :flutter_local_notifications:mergeReleaseAssets UP-TO-DATE
+> Task :flutter_plugin_android_lifecycle:preBuild UP-TO-DATE
+> Task :flutter_plugin_android_lifecycle:preReleaseBuild UP-TO-DATE
+> Task :flutter_plugin_android_lifecycle:mergeReleaseShaders UP-TO-DATE
+> Task :flutter_plugin_android_lifecycle:compileReleaseShaders NO-SOURCE
+> Task :flutter_plugin_android_lifecycle:generateReleaseAssets UP-TO-DATE
+> Task :flutter_plugin_android_lifecycle:mergeReleaseAssets UP-TO-DATE
+> Task :image_picker_android:preBuild UP-TO-DATE
+> Task :image_picker_android:preReleaseBuild UP-TO-DATE
+> Task :image_picker_android:mergeReleaseShaders UP-TO-DATE
+> Task :image_picker_android:compileReleaseShaders NO-SOURCE
+> Task :image_picker_android:generateReleaseAssets UP-TO-DATE
+> Task :image_picker_android:mergeReleaseAssets UP-TO-DATE
+> Task :path_provider_android:preBuild UP-TO-DATE
+> Task :path_provider_android:preReleaseBuild UP-TO-DATE
+> Task :path_provider_android:mergeReleaseShaders UP-TO-DATE
+> Task :path_provider_android:compileReleaseShaders NO-SOURCE
+> Task :path_provider_android:generateReleaseAssets UP-TO-DATE
+> Task :path_provider_android:mergeReleaseAssets UP-TO-DATE
+> Task :share_plus:preBuild UP-TO-DATE
+> Task :share_plus:preReleaseBuild UP-TO-DATE
+> Task :share_plus:mergeReleaseShaders UP-TO-DATE
+> Task :share_plus:compileReleaseShaders NO-SOURCE
+> Task :share_plus:generateReleaseAssets UP-TO-DATE
+> Task :share_plus:mergeReleaseAssets UP-TO-DATE
+> Task :shared_preferences_android:preBuild UP-TO-DATE
+> Task :shared_preferences_android:preReleaseBuild UP-TO-DATE
+> Task :shared_preferences_android:mergeReleaseShaders UP-TO-DATE
+> Task :shared_preferences_android:compileReleaseShaders NO-SOURCE
+> Task :shared_preferences_android:generateReleaseAssets UP-TO-DATE
+> Task :shared_preferences_android:mergeReleaseAssets UP-TO-DATE
+> Task :url_launcher_android:preBuild UP-TO-DATE
+> Task :url_launcher_android:preReleaseBuild UP-TO-DATE
+> Task :url_launcher_android:mergeReleaseShaders UP-TO-DATE
+> Task :url_launcher_android:compileReleaseShaders NO-SOURCE
+> Task :url_launcher_android:generateReleaseAssets UP-TO-DATE
+> Task :url_launcher_android:mergeReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app_links:generateReleaseResValues UP-TO-DATE
+> Task :app_links:generateReleaseResources UP-TO-DATE
+> Task :app_links:packageReleaseResources UP-TO-DATE
+> Task :app_links:parseReleaseLocalResources UP-TO-DATE
+> Task :app_links:generateReleaseRFile UP-TO-DATE
+> Task :app_links:javaPreCompileRelease UP-TO-DATE
+> Task :app_links:compileReleaseJavaWithJavac UP-TO-DATE
+> Task :app_links:mergeReleaseGeneratedProguardFiles UP-TO-DATE
+> Task :app_links:exportReleaseConsumerProguardFiles UP-TO-DATE
+> Task :flutter_local_notifications:generateReleaseResValues UP-TO-DATE
+> Task :flutter_local_notifications:generateReleaseResources UP-TO-DATE
+> Task :flutter_local_notifications:packageReleaseResources UP-TO-DATE
+> Task :flutter_local_notifications:parseReleaseLocalResources UP-TO-DATE
+> Task :flutter_local_notifications:generateReleaseRFile UP-TO-DATE
+> Task :flutter_local_notifications:javaPreCompileRelease UP-TO-DATE
+
+> Task :flutter_local_notifications:compileReleaseJavaWithJavac FAILED
+.\gradlew.bat : C:\Users\ga
+bri\AppData\Local\Pub\Cache
+\hosted\pub.dev\flutter_loc
+al_notifications-17.1.2\and
+roid\src\main\java\com\dext
+erous\flutterlocalnotificat
+ions\FlutterLocalNotificati
+onsPlugin.java:1033: 
+error: reference to 
+bigLargeIcon is ambiguous
+No linha:1 caractere:129
++ ... a\android ; 
+.\gradlew.bat 
+bundleRelease 
+--console=plain > 
+output_plai ...
++                 ~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (C:\  
+  Users\gabri\...on is a   
+ mbiguous:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+      bigPictureStyle.bigLa
+rgeIcon(null);
+                     ^
+  both method 
+bigLargeIcon(Bitmap) in 
+BigPictureStyle and method 
+bigLargeIcon(Icon) in 
+BigPictureStyle match
+1 error
+
+[Incubating] Problems report is available at: file:///Z:/palavra_viva/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with 
+an exception.
+
+* What went wrong:
+Execution failed for task '
+:flutter_local_notification
+s:compileReleaseJavaWithJav
+ac'.
+> Compilation failed; see 
+the compiler output below.
+  C:\Users\gabri\AppData\Lo
+cal\Pub\Cache\hosted\pub.de
+v\flutter_local_notificatio
+ns-17.1.2\android\src\main\
+java\com\dexterous\flutterl
+ocalnotifications\FlutterLo
+calNotificationsPlugin.java
+:1033: error: reference to 
+bigLargeIcon is ambiguous
+        bigPictureStyle.big
+LargeIcon(null);
+                       ^
+    both method 
+bigLargeIcon(Bitmap) in 
+BigPictureStyle and method 
+bigLargeIcon(Icon) in 
+BigPictureStyle match
+  1 error
+
+* Try:
+> Check your code and 
+dependencies to fix the 
+compilation error(s)
+> Run with --scan to get 
+full insights.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+42 actionable tasks: 3 executed, 39 up-to-date

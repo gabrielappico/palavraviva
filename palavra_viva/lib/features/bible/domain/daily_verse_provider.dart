@@ -5,7 +5,7 @@ import '../data/bible_repository.dart';
 final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
   final biblesRepo = ref.read(bibleRepositoryProvider);
   await biblesRepo.loadBible();
-  
+
   const verses = [
     BibleReference(abbrev: 'jo', chapter: 3, startVerse: 16, endVerse: 16),
     BibleReference(abbrev: 'sl', chapter: 23, startVerse: 1, endVerse: 1),
@@ -30,22 +30,23 @@ final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
   ];
 
   final now = DateTime.now();
-  
+
   // Deterministic seed based on date
   int seed = now.year * 1000 + now.month * 100 + now.day;
   int index = seed % verses.length;
-  
+
   final refItem = verses[index];
-  
+
   final book = biblesRepo.getBookByAbbrev(refItem.abbrev);
-  if (book == null) throw Exception('Livro não encontrado para abbrev: ${refItem.abbrev}');
-  
+  if (book == null)
+    throw Exception('Livro não encontrado para abbrev: ${refItem.abbrev}');
+
   final chapterText = book.chapters[refItem.chapter - 1];
-  
+
   String verseText = '';
   if (refItem.endVerse != null && refItem.endVerse! > refItem.startVerse) {
     for (int i = refItem.startVerse; i <= refItem.endVerse!; i++) {
-        verseText += chapterText[i - 1] + ' ';
+      verseText += '${chapterText[i - 1]} ';
     }
   } else {
     verseText = chapterText[refItem.startVerse - 1];
@@ -53,9 +54,10 @@ final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
 
   // Determine background image (1 to 4) dynamically
   final int bgIndex = (seed % 4) + 1;
-  final bgAsset = 'assets/images/verse_bg_${bgIndex}.png';
+  final bgAsset = 'assets/images/verse_bg_$bgIndex.png';
 
-  final referenceText = '${book.name} ${refItem.chapter}:${refItem.startVerse}${refItem.endVerse != null && refItem.endVerse != refItem.startVerse ? '-${refItem.endVerse}' : ''}';
+  final referenceText =
+      '${book.name} ${refItem.chapter}:${refItem.startVerse}${refItem.endVerse != null && refItem.endVerse != refItem.startVerse ? '-${refItem.endVerse}' : ''}';
 
   return DailyVerse(
     text: verseText.trim(),
@@ -70,8 +72,8 @@ class DailyVerse {
   final String bgAsset;
 
   DailyVerse({
-    required this.text, 
-    required this.reference, 
+    required this.text,
+    required this.reference,
     required this.bgAsset,
   });
 }

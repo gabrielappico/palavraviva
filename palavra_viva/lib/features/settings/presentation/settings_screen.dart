@@ -7,9 +7,63 @@ import '../../../core/theme/app_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/providers/settings_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
+  void _showDeleteAccountDialog(BuildContext context, bool isDark) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        title: Text('Excluir Minha Conta', style: AppTypography.heading3.copyWith(color: Colors.redAccent)),
+        content: Text(
+          'Tem certeza que deseja excluir sua conta permanentemente? Todos os seus dados, histórico e preferências serão irrevogavelmente apagados.\n\nEssa ação não pode ser desfeita.',
+          style: AppTypography.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text('Cancelar', style: TextStyle(color: isDark ? Colors.white70 : Colors.black87)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              try {
+                // Mostra um loading
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.gold)),
+                );
+                
+                // Chama a função do backend (que você vai criar no SQL)
+                await Supabase.instance.client.rpc('delete_user_account');
+                await Supabase.instance.client.auth.signOut();
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop(); // fecha loading
+                  context.go('/login');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Sua conta foi apagada com sucesso.')),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.of(context).pop(); // fecha loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Mande e-mail para contato@appicompany.com para a exclusão manual.'), duration: Duration(seconds: 4)),
+                  );
+                }
+              }
+            },
+            child: const Text('Sim, Excluir', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,6 +137,16 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Meu Perfil',
             onTap: () {
               context.push('/profile');
+            },
+            isDark: isDark,
+          ),
+          _SettingsTile(
+            icon: LucideIcons.trash2,
+            title: 'Excluir Minha Conta',
+            iconColor: Colors.redAccent,
+            textColor: Colors.redAccent,
+            onTap: () {
+              _showDeleteAccountDialog(context, isDark);
             },
             isDark: isDark,
           ),
@@ -218,6 +282,8 @@ class _SettingsTile extends StatelessWidget {
     this.trailing,
     this.onTap,
     required this.isDark,
+    this.iconColor,
+    this.textColor,
   });
 
   final IconData icon;
@@ -225,6 +291,8 @@ class _SettingsTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
   final bool isDark;
+  final Color? iconColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -239,13 +307,13 @@ class _SettingsTile extends StatelessWidget {
         child: Icon(
           icon, 
           size: 20, 
-          color: isDark ? Colors.white70 : Colors.black87,
+          color: iconColor ?? (isDark ? Colors.white70 : Colors.black87),
         ),
       ),
       title: Text(
         title,
         style: AppTypography.bodyMedium.copyWith(
-          color: isDark ? Colors.white : Colors.black,
+          color: textColor ?? (isDark ? Colors.white : Colors.black),
         ),
       ),
       trailing: trailing ?? (onTap != null ? Icon(LucideIcons.chevronRight, size: 18, color: isDark ? Colors.white38 : Colors.black38) : null),
