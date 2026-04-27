@@ -54,6 +54,14 @@ app.*.map.json
 # Flutter plugins
 .flutter-plugins
 
-# Build logs
+# Build logs & debug output
 build_log*.txt
 *.log
+doctor_*.txt
+pub_get*.txt
+stdout*.txt
+styles_*.txt
+manifest_*.txt
+
+# Planning docs (keep in docs/)
+admob_*.md

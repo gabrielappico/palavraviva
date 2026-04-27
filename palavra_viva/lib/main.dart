@@ -4,17 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'app.dart';
 import 'core/services/notification_service.dart';
 
 Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    
+
     await Hive.initFlutter();
     await Hive.openBox('journalBox');
     await Hive.openBox('chatBox');
     await Hive.openBox('settingsBox');
+    await Hive.openBox('bibleProgressBox');
 
     await dotenv.load(fileName: ".env");
 
@@ -24,6 +26,7 @@ Future<void> main() async {
     );
 
     await NotificationService().init();
+
 
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
@@ -39,11 +42,7 @@ Future<void> main() async {
       ),
     );
 
-    runApp(
-      const ProviderScope(
-        child: PalavraVivaApp(),
-      ),
-    );
+    runApp(const ProviderScope(child: PalavraVivaApp()));
   } catch (e, stackTrace) {
     runApp(
       MaterialApp(

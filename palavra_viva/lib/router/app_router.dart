@@ -15,13 +15,17 @@ import '../features/confession/presentation/confession_screen.dart';
 import '../features/sermons/presentation/sermons_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../features/quiz/presentation/quiz_screen.dart';
+import '../features/quiz/presentation/leaderboard_screen.dart';
 import '../features/activities/presentation/activities_screen.dart';
+import '../features/activities/presentation/activity_detail_screen.dart';
+import '../features/activities/domain/activity_model.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/settings/presentation/profile_screen.dart';
 import '../features/settings/presentation/terms_screen.dart';
 import '../features/settings/presentation/support_screen.dart';
 import '../features/settings/presentation/about_screen.dart';
 import '../features/auth/presentation/reset_password_screen.dart';
+import '../features/insights/presentation/insights_screen.dart';
 import 'dart:ui';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -123,8 +127,20 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
+      path: '/leaderboard',
+      builder: (context, state) => const LeaderboardScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: '/activities',
       builder: (context, state) => const ActivitiesScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: '/activity-detail',
+      builder: (context, state) => ActivityDetailScreen(
+        activity: state.extra! as DynamicActivity,
+      ),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
@@ -153,6 +169,11 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
+      path: '/insights',
+      builder: (context, state) => const InsightsScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: '/reset-password',
       builder: (context, state) => const ResetPasswordScreen(),
     ),
@@ -167,18 +188,20 @@ class _ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       extendBody: true,
       body: navigationShell,
-      bottomNavigationBar: Container(
+      bottomNavigationBar: keyboardOpen ? const SizedBox.shrink() : Container(
         margin: const EdgeInsets.only(
           left: AppSpacing.md,
           right: AppSpacing.md,
           bottom: AppSpacing.lg,
         ),
         decoration: BoxDecoration(
-          color: (isDark ? AppColors.darkSurface : AppColors.lightSurface).withValues(alpha: 0.75),
+          color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
+              .withValues(alpha: 0.75),
           borderRadius: BorderRadius.circular(32.0),
           border: Border.all(
             color: isDark
@@ -199,6 +222,8 @@ class _ScaffoldWithNavBar extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: SafeArea(
+              top: false,
+              bottom: false,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
@@ -208,34 +233,42 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _NavItem(
-                      icon: LucideIcons.bookOpen,
-                      label: 'Bíblia',
-                      isActive: navigationShell.currentIndex == 0,
-                      onTap: () => navigationShell.goBranch(0),
+                    Expanded(
+                      child: _NavItem(
+                        icon: LucideIcons.bookOpen,
+                        label: 'Bíblia',
+                        isActive: navigationShell.currentIndex == 0,
+                        onTap: () => navigationShell.goBranch(0, initialLocation: navigationShell.currentIndex == 0),
+                      ),
                     ),
-                    _NavItem(
-                      icon: LucideIcons.heart,
-                      label: 'Orar',
-                      isActive: navigationShell.currentIndex == 1,
-                      onTap: () => navigationShell.goBranch(1),
+                    Expanded(
+                      child: _NavItem(
+                        icon: LucideIcons.heart,
+                        label: 'Orar',
+                        isActive: navigationShell.currentIndex == 1,
+                        onTap: () => navigationShell.goBranch(1, initialLocation: navigationShell.currentIndex == 1),
+                      ),
                     ),
                     _CenterActionItem(
                       icon: LucideIcons.home,
                       isActive: navigationShell.currentIndex == 2,
-                      onTap: () => navigationShell.goBranch(2),
+                      onTap: () => navigationShell.goBranch(2, initialLocation: navigationShell.currentIndex == 2),
                     ),
-                    _NavItem(
-                      icon: LucideIcons.edit,
-                      label: 'Diário',
-                      isActive: navigationShell.currentIndex == 3,
-                      onTap: () => navigationShell.goBranch(3),
+                    Expanded(
+                      child: _NavItem(
+                        icon: LucideIcons.edit,
+                        label: 'Diário',
+                        isActive: navigationShell.currentIndex == 3,
+                        onTap: () => navigationShell.goBranch(3, initialLocation: navigationShell.currentIndex == 3),
+                      ),
                     ),
-                    _NavItem(
-                      icon: LucideIcons.messageSquare,
-                      label: 'Palavra.AI',
-                      isActive: navigationShell.currentIndex == 4,
-                      onTap: () => navigationShell.goBranch(4),
+                    Expanded(
+                      child: _NavItem(
+                        icon: LucideIcons.messageSquare,
+                        label: 'Palavra.AI',
+                        isActive: navigationShell.currentIndex == 4,
+                        onTap: () => navigationShell.goBranch(4, initialLocation: navigationShell.currentIndex == 4),
+                      ),
                     ),
                   ],
                 ),
@@ -265,7 +298,9 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final activeColor = isDark ? AppColors.gold : AppColors.goldDark;
-    final inactiveColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final inactiveColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
     final color = isActive ? activeColor : inactiveColor;
 
     return Semantics(
@@ -275,33 +310,58 @@ class _NavItem extends StatelessWidget {
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: SizedBox(
-          width: 64,
-          height: AppSpacing.touchTarget + 8,
+          height: AppSpacing.touchTarget + 20,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Pill background + scaled icon
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isActive ? 18 : 16,
+                  vertical: 2,
                 ),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? activeColor.withValues(alpha: 0.12)
+                      ? activeColor.withValues(alpha: 0.15)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                 ),
-                child: Icon(icon, color: color, size: 22),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: isActive ? 1.18 : 1.0),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, scale, _) => Transform.scale(
+                    scale: scale,
+                    child: Icon(icon, color: color, size: 22),
+                  ),
+                ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                label,
+              // Animated text
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
                 style: AppTypography.caption.copyWith(
                   color: color,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                  fontSize: 11,
+                  fontSize: isActive ? 11 : 10.5,
+                ),
+                child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
+              // Gold dot indicator
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                margin: EdgeInsets.zero,
+                width: isActive ? 4 : 0,
+                height: isActive ? 4 : 0,
+                decoration: BoxDecoration(
+                  color: activeColor,
+                  shape: BoxShape.circle,
+                  boxShadow: isActive
+                      ? [BoxShadow(color: activeColor.withValues(alpha: 0.5), blurRadius: 6)]
+                      : null,
                 ),
               ),
             ],
@@ -326,33 +386,48 @@ class _CenterActionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Semantics(
       label: 'Início',
       button: true,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.gold : (isDark ? AppColors.darkSurface2 : AppColors.lightBackground),
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.gold.withValues(alpha: 0.5), width: 1.5),
-            boxShadow: isActive
-                ? [
-                    BoxShadow(
-                      color: AppColors.gold.withValues(alpha: 0.4),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Icon(
-            icon,
-            color: isActive ? Colors.black : AppColors.gold,
-            size: 28,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(end: isActive ? 1.1 : 1.0),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          builder: (context, scale, _) => Transform.scale(
+            scale: scale,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                gradient: isActive ? AppColors.goldGradient : null,
+                color: isActive ? null : (isDark ? AppColors.darkSurface2 : AppColors.lightBackground),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.gold.withValues(alpha: isActive ? 0.8 : 0.4),
+                  width: 1.5,
+                ),
+                boxShadow: isActive
+                    ? [
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.35),
+                          blurRadius: 18,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Icon(
+                icon,
+                color: isActive ? Colors.black : AppColors.gold,
+                size: 26,
+              ),
+            ),
           ),
         ),
       ),

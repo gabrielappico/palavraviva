@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/models/bible_reference.dart';
+import 'models/bible_reference.dart';
 import '../data/bible_repository.dart';
+import 'verse_share_provider.dart';
 
 final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
   final biblesRepo = ref.read(bibleRepositoryProvider);
@@ -31,15 +32,15 @@ final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
 
   final now = DateTime.now();
 
-  // Deterministic seed based on date
   int seed = now.year * 1000 + now.month * 100 + now.day;
   int index = seed % verses.length;
 
   final refItem = verses[index];
 
   final book = biblesRepo.getBookByAbbrev(refItem.abbrev);
-  if (book == null)
+  if (book == null) {
     throw Exception('Livro não encontrado para abbrev: ${refItem.abbrev}');
+  }
 
   final chapterText = book.chapters[refItem.chapter - 1];
 
@@ -52,17 +53,27 @@ final dailyVerseProvider = FutureProvider<DailyVerse?>((ref) async {
     verseText = chapterText[refItem.startVerse - 1];
   }
 
-  // Determine background image (1 to 4) dynamically
-  final int bgIndex = (seed % 4) + 1;
+  // Determine background image dynamically
+  // NOTE: Keep this count in sync with assets/images/verse_bg_*.png files
+  const int bgCount = 3;
+  final int bgIndex = (seed % bgCount) + 1;
   final bgAsset = 'assets/images/verse_bg_$bgIndex.png';
 
   final referenceText =
       '${book.name} ${refItem.chapter}:${refItem.startVerse}${refItem.endVerse != null && refItem.endVerse != refItem.startVerse ? '-${refItem.endVerse}' : ''}';
 
+  final key = verseKey(
+    refItem.abbrev,
+    refItem.chapter,
+    refItem.startVerse,
+    refItem.endVerse,
+  );
+
   return DailyVerse(
     text: verseText.trim(),
     reference: referenceText,
     bgAsset: bgAsset,
+    verseKey: key,
   );
 });
 
@@ -70,10 +81,12 @@ class DailyVerse {
   final String text;
   final String reference;
   final String bgAsset;
+  final String verseKey;
 
   DailyVerse({
     required this.text,
     required this.reference,
     required this.bgAsset,
+    required this.verseKey,
   });
 }

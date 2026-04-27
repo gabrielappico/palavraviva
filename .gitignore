@@ -1,0 +1,38 @@
+# Security - NEVER commit these
+*.jks
+*.keystore
+*.p12
+*.key
+*.pem
+
+# Build artifacts
+build/
+*.apk
+*.aab
+*.ipa
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+*.txt
+!docs/*.txt
+
+# Agent config (local only)
+.agent/
+
+# Node modules (parola-viva-ai)
+node_modules/

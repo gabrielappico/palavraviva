@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../../core/services/gamification_service.dart';
 
 String get _openAiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
@@ -55,6 +56,11 @@ class PrayerNotifier extends Notifier<PrayerState> {
 
       final replyText = response.data['choices'][0]['message']['content'];
       state = PrayerState(prayerText: replyText);
+
+      // Track activity for streak
+      try {
+        await GamificationService().logActivity('prayer', xp: 5);
+      } catch (_) {}
     } catch (e) {
       if (_openAiApiKey.isEmpty || _openAiApiKey.contains('SUA-CHAVE')) {
         state = const PrayerState(

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../domain/journal_entry.dart';
+import '../../../core/services/gamification_service.dart';
 
 final journalProvider = NotifierProvider<JournalNotifier, JournalState>(JournalNotifier.new);
 
@@ -50,6 +51,11 @@ class JournalNotifier extends Notifier<JournalState> {
     state = state.copyWith(
       entries: [newEntry, ...state.entries],
     );
+
+    // Track activity for streak
+    try {
+      await GamificationService().logActivity('journal', xp: 5);
+    } catch (_) {}
   }
 
   Future<void> removeEntry(String id) async {

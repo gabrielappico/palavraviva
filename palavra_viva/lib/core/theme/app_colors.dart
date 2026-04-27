@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 abstract final class AppColors {
   // ── Dark Mode (default) ──
-  static const darkBackground = Color(0xFF0A0E1A);
-  static const darkSurface = Color(0xFF141B2D);
-  static const darkSurface2 = Color(0xFF1E2740);
+  static const darkBackground = Color(0xFF070A14);
+  static const darkSurface = Color(0xFF0E1322);
+  static const darkSurface2 = Color(0xFF161D30);
 
   // ── Light Mode ──
   static const lightBackground = Color(0xFFF5F3EE);

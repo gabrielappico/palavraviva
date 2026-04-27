@@ -6,11 +6,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../bible/domain/verse_share_provider.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/gold_button.dart';
 import '../../bible/domain/daily_verse_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/providers/gamification_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -30,6 +32,8 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const _Header(),
+                    const SizedBox(height: 20),
+                    const _GamificationCard(),
                     const SizedBox(height: 32),
                     const _VerseOfTheDay()
                         .animate()
@@ -237,7 +241,7 @@ class _VerseOfTheDay extends ConsumerWidget {
         dailyVerseAsync.when(
           data: (dailyVerse) {
             if (dailyVerse == null) return const SizedBox.shrink();
-            return _buildVerseCard(dailyVerse.text, dailyVerse.reference, dailyVerse.bgAsset);
+            return _buildVerseCard(context, ref, dailyVerse);
           },
           loading: () => Container(
             width: double.infinity,
@@ -257,94 +261,151 @@ class _VerseOfTheDay extends ConsumerWidget {
     );
   }
 
-  Widget _buildVerseCard(String text, String reference, String bgAsset) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 32,
-            offset: const Offset(0, 16),
-          ),
-        ],
-        image: DecorationImage(
-          image: AssetImage(bgAsset),
-          fit: BoxFit.cover,
-        ),
-      ),
+  String _formatCount(int count) {
+    if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}M';
+    if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}k';
+    return count.toString();
+  }
+
+  Widget _buildVerseCard(BuildContext context, WidgetRef ref, DailyVerse verse) {
+    final shareCount = ref.watch(verseShareCountProvider(verse.verseKey));
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(32),
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withValues(alpha: 0.2),
-              Colors.black.withValues(alpha: 0.6),
-            ],
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 32,
+              offset: const Offset(0, 16),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                LucideIcons.quote, 
-                color: AppColors.gold.withValues(alpha: 0.7), 
-                size: 32,
+        child: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
+              child: Image.asset(
+                verse.bgAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF1a1a2e),
+                          Color(0xFF16213e),
+                          Color(0xFF0f3460),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-              const SizedBox(height: 24),
-              Text(
-                text,
-                style: AppTypography.heading1.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.white,
-                  height: 1.4,
+            ),
+            // Dark overlay gradient
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.2),
+                      Colors.black.withValues(alpha: 0.6),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+            ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Icon(
+                    LucideIcons.quote, 
+                    color: AppColors.gold.withValues(alpha: 0.7), 
+                    size: 32,
+                  ),
+                  const SizedBox(height: 24),
                   Text(
-                    reference.toUpperCase(),
-                    style: AppTypography.caption.copyWith(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      letterSpacing: 2,
-                      fontWeight: FontWeight.bold,
+                    verse.text,
+                    style: AppTypography.heading1.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.white,
+                      height: 1.4,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Share.share(
-                        '"$text"\n\n— $reference\n\nCompartilhado pelo Palavra Viva 🕊️',
-                        subject: 'Versículo do Dia — $reference',
-                      );
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withValues(alpha: 0.3),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          verse.reference.toUpperCase(),
+                          style: AppTypography.caption.copyWith(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      child: const Icon(
-                        LucideIcons.share2,
-                        color: AppColors.gold,
-                        size: 18,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (shareCount > 0) ...[
+                            Text(
+                              _formatCount(shareCount),
+                              style: AppTypography.caption.copyWith(
+                                color: Colors.white.withValues(alpha: 0.5),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          GestureDetector(
+                            onTap: () {
+                              incrementVerseShare(ref, verse.verseKey);
+                              SharePlus.instance.share(
+                                ShareParams(
+                                  text: '"${verse.text}"\n\n— ${verse.reference}\n\nCompartilhado pelo Palavra Viva 🕊️',
+                                  subject: 'Versículo do Dia — ${verse.reference}',
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black.withValues(alpha: 0.3),
+                                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                              ),
+                              child: const Icon(
+                                LucideIcons.share2,
+                                color: AppColors.gold,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -397,14 +458,14 @@ class _FeaturesGrid extends StatelessWidget {
         _FeatureCard(
           title: 'Palavra.AI',
           description: 'Conselheiro Teológico',
-          icon: const Icon(Icons.auto_stories_rounded, color: AppColors.gold, size: 24),
+          icon: const Icon(LucideIcons.sparkles, color: AppColors.gold, size: 24),
           color: AppColors.gold,
-          onTap: () => context.push('/chat'),
+          onTap: () => context.go('/chat'),
         ),
         _FeatureCard(
           title: 'Bíblia',
           description: 'Leitura Interativa',
-          icon: const Icon(LucideIcons.book, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(Icons.auto_stories_rounded, color: AppColors.celestialBlue, size: 24),
           color: AppColors.celestialBlue,
           onTap: () => context.go('/bible'),
         ),
@@ -449,6 +510,28 @@ class _FeaturesGrid extends StatelessWidget {
           icon: const Icon(LucideIcons.users, color: AppColors.celestialBlue, size: 24),
           color: AppColors.celestialBlue,
           onTap: () => context.push('/activities'),
+        ),
+        _FeatureCard(
+          title: 'Meus Insights',
+          description: 'Suas estatísticas',
+          icon: const Icon(LucideIcons.barChart3, color: AppColors.gold, size: 24),
+          color: AppColors.gold,
+          onTap: () => context.push('/insights'),
+        ),
+        _FeatureCard(
+          title: 'Compartilhar',
+          description: 'Convide amigos',
+          icon: const Icon(LucideIcons.share2, color: AppColors.celestialBlue, size: 24),
+          color: AppColors.celestialBlue,
+          onTap: () => SharePlus.instance.share(
+            ShareParams(
+              text: '✝️ Conhece o Palavra Viva?\n\n'
+                  'Um app cristão com Bíblia interativa, quiz bíblico, '
+                  'conselheiro teológico com IA, diário espiritual e muito mais.\n\n'
+                  '📲 Android: https://play.google.com/store/apps/details?id=com.palavraviva.app\n'
+                  '🍎 iPhone: https://apps.apple.com/app/palavra-viva/id0000000000',
+            ),
+          ),
         ),
       ],
     );
@@ -560,6 +643,130 @@ class _AestheticQuote extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _GamificationCard extends ConsumerWidget {
+  const _GamificationCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+    final surface2 = isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
+    final subColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+
+    return ref.watch(userStatsProvider).when(
+      data: (stats) {
+        if (stats.totalXp == 0 && stats.currentStreak == 0) return const SizedBox.shrink();
+        return GestureDetector(
+          onTap: () => context.push('/leaderboard'),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              children: [
+                // Level circle
+                Container(
+                  width: 44, height: 44,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft, end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.gold.withValues(alpha: 0.2),
+                        AppColors.gold.withValues(alpha: 0.05),
+                      ],
+                    ),
+                    border: Border.all(color: AppColors.gold.withValues(alpha: 0.4), width: 2),
+                  ),
+                  child: Center(
+                    child: Text('${stats.level}',
+                        style: AppTypography.heading3.copyWith(
+                            color: AppColors.gold, fontSize: 18, fontWeight: FontWeight.w800)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Title + progress
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(stats.title,
+                          style: AppTypography.label.copyWith(
+                              color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 13)),
+                      const SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: LinearProgressIndicator(
+                          value: stats.levelProgress,
+                          backgroundColor: surface2,
+                          valueColor: const AlwaysStoppedAnimation(AppColors.gold),
+                          minHeight: 4,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text('${stats.totalXp} / ${stats.xpForNextLevel} XP',
+                          style: AppTypography.caption.copyWith(color: subColor, fontSize: 10)),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Streak + XP compact
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (stats.currentStreak > 0)
+                      _MiniChip(
+                        icon: LucideIcons.flame,
+                        text: '${stats.currentStreak}d',
+                        color: Colors.orange.shade300,
+                      ),
+                    if (stats.currentStreak > 0) const SizedBox(height: 4),
+                    if (stats.freeLives > 0)
+                      _MiniChip(
+                        icon: LucideIcons.heart,
+                        text: '${stats.freeLives}',
+                        color: const Color(0xFF81C784),
+                      ),
+                  ],
+                ),
+                const SizedBox(width: 6),
+                Icon(LucideIcons.chevronRight, size: 14, color: subColor),
+              ],
+            ),
+          ),
+        ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1);
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _MiniChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Color color;
+
+  const _MiniChip({required this.icon, required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 12, color: color),
+        const SizedBox(width: 3),
+        Text(text,
+            style: AppTypography.caption.copyWith(
+                color: color, fontWeight: FontWeight.bold, fontSize: 11)),
       ],
     );
   }

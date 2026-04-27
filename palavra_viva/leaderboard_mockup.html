@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Palavra Viva — Ranking Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0D0D0D;
+      --surface: #1A1A1A;
+      --surface2: #2A2A2A;
+      --surface3: #333;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201, 168, 76, 0.15);
+      --gold-border: rgba(201, 168, 76, 0.25);
+      --text: #F5F0E8;
+      --text-secondary: #8A8A8A;
+      --orange: #E8944A;
+      --green: #5CB85C;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --radius-pill: 50px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .phone-frame {
+      width: 390px;
+      min-height: 100vh;
+      background: var(--bg);
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .phone-frame::-webkit-scrollbar { width: 3px; }
+    .phone-frame::-webkit-scrollbar-track { background: transparent; }
+    .phone-frame::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+    /* AppBar */
+    .appbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(16px);
+      padding: 16px 20px 0;
+    }
+
+    .appbar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .appbar-back {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .appbar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--surface2);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* User Card */
+    .user-card {
+      margin: 16px 16px 8px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeSlideUp 0.4s ease;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .user-sub { font-size: 11px; color: var(--gold); margin-top: 2px; font-weight: 500; }
+
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      background: rgba(201, 168, 76, 0.08);
+      border-radius: var(--radius-pill);
+      flex-shrink: 0;
+    }
+
+    .streak-badge .emoji { font-size: 14px; }
+    .streak-badge .num { font-size: 13px; font-weight: 700; color: var(--gold); }
+
+    /* Progress bar in user card */
+    .level-progress-container {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .level-progress-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .level-progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .level-progress-text {
+      font-size: 9px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* Leaderboard list */
+    .list {
+      padding: 8px 16px 100px;
+    }
+
+    .tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      margin-bottom: 6px;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--surface2);
+      transition: all 0.2s ease;
+      animation: fadeSlideUp 0.3s ease both;
+    }
+
+    .tile:hover {
+      border-color: var(--gold-border);
+      transform: translateX(2px);
+    }
+
+    .tile.is-me {
+      background: var(--gold-dim);
+      border-color: var(--gold-border);
+    }
+
+    .tile-rank {
+      width: 32px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .tile-rank.medal { font-size: 20px; }
+
+    .tile-info { flex: 1; min-width: 0; }
+    .tile-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tile.is-me .tile-name { color: var(--gold); font-weight: 700; }
+
+    .tile-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .tile-streak {
+      font-size: 11px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .tile-xp {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* Tab content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin: 0 16px 8px;
+    }
+
+    .stat-chip {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--surface2);
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Position indicator */
+    .my-position {
+      margin: 0 16px 12px;
+      padding: 10px 14px;
+      background: var(--gold-dim);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+  <!-- AppBar -->
+  <div class="appbar">
+    <div class="appbar-row">
+      <button class="appbar-back">←</button>
+      <div class="appbar-title">🏆 Ranking</div>
+      <div style="width:28px"></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="weekly" onclick="switchTab('weekly')">Semanal</div>
+      <div class="tab" data-tab="alltime" onclick="switchTab('alltime')">Geral</div>
+    </div>
+  </div>
+
+  <!-- User Card (current user) -->
+  <div class="user-card" id="userCard"></div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- Position indicator -->
+  <div class="my-position" id="myPosition"></div>
+
+  <!-- Tab Contents -->
+  <div class="tab-content active" id="weekly-content">
+    <div class="list" id="weekly-list"></div>
+  </div>
+  <div class="tab-content" id="alltime-content">
+    <div class="list" id="alltime-list"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// LEVEL SYSTEM (mirrors Dart code)
+// ═══════════════════════════════════════
+const MAX_LEVEL = 33;
+
+function xpForLevel(level) {
+  if (level <= 1) return 0;
+  if (level > MAX_LEVEL) return xpForLevel(MAX_LEVEL);
+  return level * (level - 1) * 20;
+}
+
+function getLevel(xp) {
+  for (let lvl = MAX_LEVEL; lvl >= 1; lvl--) {
+    if (xp >= xpForLevel(lvl)) return lvl;
+  }
+  return 1;
+}
+
+function getTitle(level) {
+  if (level >= 31) return 'Teólogo';
+  if (level >= 26) return 'Apóstolo';
+  if (level >= 21) return 'Profeta';
+  if (level >= 16) return 'Sacerdote';
+  if (level >= 11) return 'Levita';
+  if (level >= 6) return 'Discípulo';
+  return 'Ovelha';
+}
+
+function getTitleEmoji(level) {
+  if (level >= 31) return '📜';
+  if (level >= 26) return '✝️';
+  if (level >= 21) return '🔮';
+  if (level >= 16) return '⛪';
+  if (level >= 11) return '🕯️';
+  if (level >= 6) return '🙏';
+  return '🐑';
+}
+
+function getLevelProgress(xp) {
+  const level = getLevel(xp);
+  if (level >= MAX_LEVEL) return 1;
+  const current = xpForLevel(level);
+  const next = xpForLevel(level + 1);
+  return (xp - current) / (next - current);
+}
+
+// ═══════════════════════════════════════
+// MOCK DATA GENERATION
+// 50 users simulated over 30 days
+// ═══════════════════════════════════════
+const NAMES = [
+  'Gabriel Oliveira', 'Maria Silva', 'João Pedro Santos', 'Ana Beatriz',
+  'Lucas Ferreira', 'Isabela Costa', 'Pedro Henrique', 'Juliana Almeida',
+  'Matheus Ribeiro', 'Camila Sousa', 'Rafael Lima', 'Bruna Martins',
+  'Felipe Rodrigues', 'Larissa Mendes', 'Thiago Carvalho', 'Amanda Araújo',
+  'Gustavo Pereira', 'Carolina Barbosa', 'Diego Nascimento', 'Letícia Fernandes',
+  'Bruno Gomes', 'Patricia Moreira', 'André Correia', 'Fernanda Teixeira',
+  'Rodrigo Rocha', 'Vanessa Dias', 'Marcos Santos', 'Tatiana Lima',
+  'Leonardo Souza', 'Renata Machado', 'Daniel Azevedo', 'Aline Pinto',
+  'Eduardo Cardoso', 'Priscila Monteiro', 'Vinícius Castro', 'Débora Vieira',
+  'Henrique Lopes', 'Cristiane Freitas', 'Fábio Mello', 'Simone Barros',
+  'Ricardo Moura', 'Sandra Oliveira', 'Paulo Henrique', 'Marta Campos',
+  'Caio Neves', 'Elaine Duarte', 'Sérgio Cunha', 'Regiane Sales',
+  'Adriano Brito', 'Claudia Ramos', 'Igor Rezende', 'Raquel Nogueira',
+  'Willian Batista', 'Bianca Fonseca', 'Leandro Pires',
+];
+
+const MY_INDEX = 0; // Gabriel is "me"
+
+function seededRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function generateUsers() {
+  const users = [];
+
+  for (let i = 0; i < NAMES.length; i++) {
+    const seed = i * 137 + 42;
+    const r = (s) => seededRandom(seed + s);
+
+    // Activity level (0-1): determines how active this user is
+    const activity = 0.15 + r(1) * 0.85;
+
+    // Days active in 30-day period
+    const daysActive = Math.floor(activity * 28) + 2;
+
+    // XP per active day (varies by user type)
+    const xpPerDay = Math.floor(15 + r(2) * 65 * activity);
+
+    // Total XP over 30 days
+    const totalXp = Math.floor(xpPerDay * daysActive * (0.8 + r(3) * 0.4));
+
+    // Weekly XP (last 7 days, proportional)
+    const weeklyActivity = r(4) > 0.15 ? (0.3 + r(5) * 0.7) : 0;
+    const weeklyXp = Math.floor(totalXp * (7/30) * weeklyActivity * (0.6 + r(6) * 0.8));
+
+    // Streak: correlated with activity
+    const maxPossibleStreak = Math.min(30, daysActive);
+    const currentStreak = activity > 0.5
+      ? Math.floor(maxPossibleStreak * (0.3 + r(7) * 0.7))
+      : Math.floor(r(8) * 7);
+
+    // Quizzes
+    const weeklyQuizzes = Math.floor(weeklyXp / 25);
+    const weeklyCorrect = Math.floor(weeklyQuizzes * (0.5 + r(9) * 0.45) * 5);
+    const weeklyTotal = Math.floor(weeklyCorrect / (0.5 + r(10) * 0.4));
+
+    const level = getLevel(totalXp);
+
+    users.push({
+      id: `user_${i}`,
+      name: NAMES[i],
+      totalXp,
+      weeklyXp,
+      currentStreak,
+      level,
+      title: getTitle(level),
+      emoji: getTitleEmoji(level),
+      weeklyQuizzes,
+      weeklyCorrect,
+      weeklyTotal,
+      isMe: i === MY_INDEX,
+    });
+  }
+
+  return users;
+}
+
+const USERS = generateUsers();
+
+// Boost "me" to be competitive but not #1
+USERS[MY_INDEX].totalXp = 4850;
+USERS[MY_INDEX].weeklyXp = 620;
+USERS[MY_INDEX].currentStreak = 12;
+USERS[MY_INDEX].level = getLevel(4850);
+USERS[MY_INDEX].title = getTitle(USERS[MY_INDEX].level);
+USERS[MY_INDEX].emoji = getTitleEmoji(USERS[MY_INDEX].level);
+
+// ═══════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════
+
+function renderUserCard() {
+  const me = USERS[MY_INDEX];
+  const progress = getLevelProgress(me.totalXp);
+  const nextXp = xpForLevel(me.level + 1);
+
+  document.getElementById('userCard').innerHTML = `
+    <div class="user-avatar">${me.emoji}</div>
+    <div class="user-info">
+      <div class="user-name">${me.name}</div>
+      <div class="user-sub">Nv. ${me.level} · ${me.title} · ${me.totalXp.toLocaleString()} XP</div>
+      <div class="level-progress-container">
+        <div class="level-progress-bar">
+          <div class="level-progress-fill" style="width:${(progress*100).toFixed(1)}%"></div>
+        </div>
+        <div class="level-progress-text">${me.totalXp} / ${nextXp} XP</div>
+      </div>
+    </div>
+    <div class="streak-badge">
+      <span class="emoji">🕊️</span>
+      <span class="num">${me.currentStreak}</span>
+    </div>
+  `;
+}
+
+function renderStats() {
+  const me = USERS[MY_INDEX];
+  const accuracy = me.weeklyTotal > 0 ? Math.round(me.weeklyCorrect / me.weeklyTotal * 100) : 0;
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-chip">
+      <div class="stat-value">${me.weeklyXp}</div>
+      <div class="stat-label">XP Semanal</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-value">${me.currentStreak}</div>
+      <div class="stat-label">Streak</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-value">${me.level}</div>
+      <div class="stat-label">Nível</div>
+    </div>
+  `;
+}
+
+function renderList(containerId, users, xpKey) {
+  const container = document.getElementById(containerId);
+  const sorted = [...users].sort((a, b) => b[xpKey] - a[xpKey]);
+
+  // Find my position
+  const myPos = sorted.findIndex(u => u.isMe) + 1;
+  document.getElementById('myPosition').innerHTML = `📍 Sua posição: <strong>#${myPos}</strong> de ${sorted.length}`;
+
+  container.innerHTML = sorted.map((user, i) => {
+    const rank = i + 1;
+    let rankDisplay;
+    if (rank === 1) rankDisplay = '<span class="tile-rank medal">🥇</span>';
+    else if (rank === 2) rankDisplay = '<span class="tile-rank medal">🥈</span>';
+    else if (rank === 3) rankDisplay = '<span class="tile-rank medal">🥉</span>';
+    else rankDisplay = `<span class="tile-rank">#${rank}</span>`;
+
+    const xp = user[xpKey];
+    const meClass = user.isMe ? 'is-me' : '';
+    const nameSuffix = user.isMe ? ' (Você)' : '';
+    const delay = Math.min(i * 30, 800);
+
+    return `
+      <div class="tile ${meClass}" style="animation-delay:${delay}ms">
+        ${rankDisplay}
+        <div class="tile-info">
+          <div class="tile-name">${user.name}${nameSuffix}</div>
+          <div class="tile-sub">Nv.${user.level} · ${user.title}</div>
+        </div>
+        ${user.currentStreak > 0 ? `<span class="tile-streak">🕊️${user.currentStreak}</span>` : ''}
+        <span class="tile-xp">${xp.toLocaleString()} XP</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`${tab}-content`).classList.add('active');
+
+  if (tab === 'weekly') {
+    renderList('weekly-list', USERS, 'weeklyXp');
+  } else {
+    renderList('alltime-list', USERS, 'totalXp');
+  }
+}
+
+// Initialize
+renderUserCard();
+renderStats();
+renderList('weekly-list', USERS, 'weeklyXp');
+renderList('alltime-list', USERS, 'totalXp');
+</script>
+
+</body>
+</html>
