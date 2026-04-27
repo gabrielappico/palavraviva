@@ -508,30 +508,13 @@ class _DiscoverHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          'Descobrir',
-          style: AppTypography.heading2.copyWith(
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
-        ),
-        Text(
-          'VER TUDO',
-          style: AppTypography.caption.copyWith(
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
-            fontSize: 10,
-            letterSpacing: 2,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+    return Text(
+      'Descobrir',
+      style: AppTypography.heading2.copyWith(
+        color: isDark
+            ? AppColors.darkTextPrimary
+            : AppColors.lightTextPrimary,
+      ),
     );
   }
 }
