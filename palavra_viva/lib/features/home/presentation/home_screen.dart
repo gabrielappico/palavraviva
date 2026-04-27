@@ -27,7 +27,10 @@ class HomeScreen extends StatelessWidget {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -38,16 +41,27 @@ class HomeScreen extends StatelessWidget {
                     const _VerseOfTheDay()
                         .animate()
                         .fade(duration: 800.ms)
-                        .slideY(begin: 0.1, duration: 800.ms, curve: Curves.easeOutCubic),
+                        .slideY(
+                          begin: 0.1,
+                          duration: 800.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
                     const SizedBox(height: 48),
                     const _DiscoverHeader().animate().fade(delay: 200.ms),
                     const SizedBox(height: 24),
                     const _FeaturesGrid()
                         .animate()
                         .fade(delay: 300.ms, duration: 800.ms)
-                        .slideY(begin: 0.1, duration: 800.ms, curve: Curves.easeOutCubic),
+                        .slideY(
+                          begin: 0.1,
+                          duration: 800.ms,
+                          curve: Curves.easeOutCubic,
+                        ),
                     const SizedBox(height: 64),
-                    const _AestheticQuote().animate().fade(delay: 500.ms, duration: 1000.ms),
+                    const _AestheticQuote().animate().fade(
+                      delay: 500.ms,
+                      duration: 1000.ms,
+                    ),
                     const SizedBox(height: 120), // Bottom padding for FAB/nav
                   ],
                 ),
@@ -70,36 +84,49 @@ class _Header extends StatelessWidget {
       useRootNavigator: true,
       backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusXl),
+        ),
       ),
       builder: (context) => SafeArea(
         child: Container(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 40, height: 4, decoration: BoxDecoration(color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2, borderRadius: BorderRadius.circular(2))),
-            const SizedBox(height: AppSpacing.xl),
-            ListTile(
-              leading: const Icon(LucideIcons.settings, color: AppColors.gold),
-              title: Text('Configurações', style: AppTypography.bodyMedium),
-              onTap: () {
-                Navigator.pop(context);
-                context.push('/settings');
-              },
-            ),
-            ListTile(
-              leading: const Icon(LucideIcons.info, color: AppColors.gold),
-              title: Text('Sobre o App', style: AppTypography.bodyMedium),
-              onTap: () {
-                Navigator.pop(context);
-                context.push('/about');
-              },
-            ),
-
-          ],
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              ListTile(
+                leading: const Icon(
+                  LucideIcons.settings,
+                  color: AppColors.gold,
+                ),
+                title: Text('Configurações', style: AppTypography.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.push('/settings');
+                },
+              ),
+              ListTile(
+                leading: const Icon(LucideIcons.info, color: AppColors.gold),
+                title: Text('Sobre o App', style: AppTypography.bodyMedium),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.push('/about');
+                },
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -117,36 +144,65 @@ class _Header extends StatelessWidget {
       useRootNavigator: true,
       backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusXl),
+        ),
       ),
       builder: (context) => SafeArea(
         child: Container(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 40, height: 4, decoration: BoxDecoration(color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2, borderRadius: BorderRadius.circular(2))),
-            const SizedBox(height: AppSpacing.xl),
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2,
-              backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
-              child: avatarUrl == null
-                  ? Text(initial, style: AppTypography.heading1.copyWith(color: AppColors.gold, fontSize: 32))
-                  : null,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(name, style: AppTypography.heading2),
-            const SizedBox(height: AppSpacing.sm),
-            Text('Membro do Palavra Viva', style: AppTypography.caption.copyWith(color: AppColors.darkTextSecondary)),
-            const SizedBox(height: AppSpacing.xl),
-            GoldButton(label: 'Editar Perfil', onPressed: () {
-              Navigator.pop(context);
-              context.push('/profile');
-            }),
-          ],
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: isDark
+                    ? AppColors.darkSurface2
+                    : AppColors.lightSurface2,
+                backgroundImage: avatarUrl != null
+                    ? NetworkImage(avatarUrl)
+                    : null,
+                child: avatarUrl == null
+                    ? Text(
+                        initial,
+                        style: AppTypography.heading1.copyWith(
+                          color: AppColors.gold,
+                          fontSize: 32,
+                        ),
+                      )
+                    : null,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(name, style: AppTypography.heading2),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Membro do Palavra Viva',
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.darkTextSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              GoldButton(
+                label: 'Editar Perfil',
+                onPressed: () {
+                  Navigator.pop(context);
+                  context.push('/profile');
+                },
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -167,7 +223,11 @@ class _Header extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => _showMenu(context),
-              child: const Icon(LucideIcons.menu, color: AppColors.gold, size: 28),
+              child: const Icon(
+                LucideIcons.menu,
+                color: AppColors.gold,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Column(
@@ -183,7 +243,9 @@ class _Header extends StatelessWidget {
                 Text(
                   'A PAZ SEJA COM VOCÊ',
                   style: AppTypography.caption.copyWith(
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                     fontSize: 10,
                     letterSpacing: 2,
                     fontWeight: FontWeight.bold,
@@ -200,13 +262,26 @@ class _Header extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: isDark ? AppColors.darkSurface2 : AppColors.lightSurface2),
+              border: Border.all(
+                color: isDark
+                    ? AppColors.darkSurface2
+                    : AppColors.lightSurface2,
+              ),
             ),
             child: CircleAvatar(
-              backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-              backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
+              backgroundColor: isDark
+                  ? AppColors.darkSurface
+                  : AppColors.lightSurface,
+              backgroundImage: avatarUrl != null
+                  ? NetworkImage(avatarUrl)
+                  : null,
               child: avatarUrl == null
-                  ? Text(initial, style: AppTypography.heading3.copyWith(color: AppColors.gold))
+                  ? Text(
+                      initial,
+                      style: AppTypography.heading3.copyWith(
+                        color: AppColors.gold,
+                      ),
+                    )
                   : null,
             ),
           ),
@@ -250,11 +325,16 @@ class _VerseOfTheDay extends ConsumerWidget {
               borderRadius: BorderRadius.circular(32),
               color: AppColors.celestialBlue.withValues(alpha: 0.1),
             ),
-            child: const Center(child: CircularProgressIndicator(color: AppColors.gold)),
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.gold),
+            ),
           ),
           error: (error, stack) => Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text('Erro: $error\n$stack', style: const TextStyle(color: Colors.red)),
+            child: Text(
+              'Erro: $error\n$stack',
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ),
       ],
@@ -267,7 +347,11 @@ class _VerseOfTheDay extends ConsumerWidget {
     return count.toString();
   }
 
-  Widget _buildVerseCard(BuildContext context, WidgetRef ref, DailyVerse verse) {
+  Widget _buildVerseCard(
+    BuildContext context,
+    WidgetRef ref,
+    DailyVerse verse,
+  ) {
     final shareCount = ref.watch(verseShareCountProvider(verse.verseKey));
 
     return ClipRRect(
@@ -312,7 +396,9 @@ class _VerseOfTheDay extends ConsumerWidget {
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.1),
+                  ),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -331,8 +417,8 @@ class _VerseOfTheDay extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    LucideIcons.quote, 
-                    color: AppColors.gold.withValues(alpha: 0.7), 
+                    LucideIcons.quote,
+                    color: AppColors.gold.withValues(alpha: 0.7),
                     size: 32,
                   ),
                   const SizedBox(height: 24),
@@ -378,8 +464,10 @@ class _VerseOfTheDay extends ConsumerWidget {
                               incrementVerseShare(ref, verse.verseKey);
                               SharePlus.instance.share(
                                 ShareParams(
-                                  text: '"${verse.text}"\n\n— ${verse.reference}\n\nCompartilhado pelo Palavra Viva 🕊️',
-                                  subject: 'Versículo do Dia — ${verse.reference}',
+                                  text:
+                                      '"${verse.text}"\n\n— ${verse.reference}\n\nCompartilhado pelo Palavra Viva 🕊️',
+                                  subject:
+                                      'Versículo do Dia — ${verse.reference}',
                                 ),
                               );
                             },
@@ -389,7 +477,9 @@ class _VerseOfTheDay extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.black.withValues(alpha: 0.3),
-                                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                ),
                               ),
                               child: const Icon(
                                 LucideIcons.share2,
@@ -425,13 +515,17 @@ class _DiscoverHeader extends StatelessWidget {
         Text(
           'Descobrir',
           style: AppTypography.heading2.copyWith(
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
         Text(
           'VER TUDO',
           style: AppTypography.caption.copyWith(
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
             fontSize: 10,
             letterSpacing: 2,
             fontWeight: FontWeight.bold,
@@ -458,28 +552,44 @@ class _FeaturesGrid extends StatelessWidget {
         _FeatureCard(
           title: 'Palavra.AI',
           description: 'Conselheiro Teológico',
-          icon: const Icon(LucideIcons.sparkles, color: AppColors.gold, size: 24),
+          icon: const Icon(
+            LucideIcons.sparkles,
+            color: AppColors.gold,
+            size: 24,
+          ),
           color: AppColors.gold,
           onTap: () => context.go('/chat'),
         ),
         _FeatureCard(
           title: 'Bíblia',
           description: 'Leitura Interativa',
-          icon: const Icon(Icons.auto_stories_rounded, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(
+            Icons.auto_stories_rounded,
+            color: AppColors.celestialBlue,
+            size: 24,
+          ),
           color: AppColors.celestialBlue,
           onTap: () => context.go('/bible'),
         ),
         _FeatureCard(
           title: 'Orações',
           description: 'Pedidos de Intercessão',
-          icon: const FaIcon(FontAwesomeIcons.handsPraying, color: AppColors.gold, size: 24),
+          icon: const FaIcon(
+            FontAwesomeIcons.handsPraying,
+            color: AppColors.gold,
+            size: 24,
+          ),
           color: AppColors.gold,
           onTap: () => context.go('/pray'),
         ),
         _FeatureCard(
           title: 'Diário',
           description: 'Reflexões Pessoais',
-          icon: const Icon(LucideIcons.penTool, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(
+            LucideIcons.penTool,
+            color: AppColors.celestialBlue,
+            size: 24,
+          ),
           color: AppColors.celestialBlue,
           onTap: () => context.go('/journal'),
         ),
@@ -493,39 +603,60 @@ class _FeaturesGrid extends StatelessWidget {
         _FeatureCard(
           title: 'Pregações',
           description: 'Crie sermões completos',
-          icon: const Icon(LucideIcons.mic, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(
+            LucideIcons.mic,
+            color: AppColors.celestialBlue,
+            size: 24,
+          ),
           color: AppColors.celestialBlue,
           onTap: () => context.push('/sermons'),
         ),
         _FeatureCard(
           title: 'Quiz',
           description: 'Teste seus saberes',
-          icon: const Icon(LucideIcons.lightbulb, color: AppColors.gold, size: 24),
+          icon: const Icon(
+            LucideIcons.lightbulb,
+            color: AppColors.gold,
+            size: 24,
+          ),
           color: AppColors.gold,
           onTap: () => context.push('/quiz'),
         ),
         _FeatureCard(
           title: 'Dinâmicas',
           description: 'Atividades para grupos',
-          icon: const Icon(LucideIcons.users, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(
+            LucideIcons.users,
+            color: AppColors.celestialBlue,
+            size: 24,
+          ),
           color: AppColors.celestialBlue,
           onTap: () => context.push('/activities'),
         ),
         _FeatureCard(
           title: 'Meus Insights',
           description: 'Suas estatísticas',
-          icon: const Icon(LucideIcons.barChart3, color: AppColors.gold, size: 24),
+          icon: const Icon(
+            LucideIcons.barChart3,
+            color: AppColors.gold,
+            size: 24,
+          ),
           color: AppColors.gold,
           onTap: () => context.push('/insights'),
         ),
         _FeatureCard(
           title: 'Compartilhar',
           description: 'Convide amigos',
-          icon: const Icon(LucideIcons.share2, color: AppColors.celestialBlue, size: 24),
+          icon: const Icon(
+            LucideIcons.share2,
+            color: AppColors.celestialBlue,
+            size: 24,
+          ),
           color: AppColors.celestialBlue,
           onTap: () => SharePlus.instance.share(
             ShareParams(
-              text: '✝️ Conhece o Palavra Viva?\n\n'
+              text:
+                  '✝️ Conhece o Palavra Viva?\n\n'
                   'Um app cristão com Bíblia interativa, quiz bíblico, '
                   'conselheiro teológico com IA, diário espiritual e muito mais.\n\n'
                   '📲 Android: https://play.google.com/store/apps/details?id=com.palavraviva.app\n'
@@ -564,7 +695,8 @@ class _FeatureCard extends StatelessWidget {
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: (isDark ? AppColors.darkSurface2 : AppColors.lightSurface2).withValues(alpha: 0.5),
+            color: (isDark ? AppColors.darkSurface2 : AppColors.lightSurface2)
+                .withValues(alpha: 0.5),
           ),
         ),
         child: Column(
@@ -587,14 +719,18 @@ class _FeatureCard extends StatelessWidget {
                   title,
                   style: AppTypography.title.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
                   style: AppTypography.caption.copyWith(
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                     height: 1.2,
                   ),
                 ),
@@ -638,7 +774,11 @@ class _AestheticQuote extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.heading3.copyWith(
               fontStyle: FontStyle.italic,
-              color: (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary).withValues(alpha: 0.6),
+              color:
+                  (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary)
+                      .withValues(alpha: 0.6),
               height: 1.6,
             ),
           ),
@@ -656,97 +796,126 @@ class _GamificationCard extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surface = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final surface2 = isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
-    final subColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final subColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
-    return ref.watch(userStatsProvider).when(
-      data: (stats) {
-        if (stats.totalXp == 0 && stats.currentStreak == 0) return const SizedBox.shrink();
-        return GestureDetector(
-          onTap: () => context.push('/leaderboard'),
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
-            ),
-            child: Row(
-              children: [
-                // Level circle
-                Container(
-                  width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft, end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.gold.withValues(alpha: 0.2),
-                        AppColors.gold.withValues(alpha: 0.05),
-                      ],
-                    ),
-                    border: Border.all(color: AppColors.gold.withValues(alpha: 0.4), width: 2),
-                  ),
-                  child: Center(
-                    child: Text('${stats.level}',
-                        style: AppTypography.heading3.copyWith(
-                            color: AppColors.gold, fontSize: 18, fontWeight: FontWeight.w800)),
+    return ref
+        .watch(userStatsProvider)
+        .when(
+          data: (stats) {
+            if (stats.totalXp == 0 && stats.currentStreak == 0)
+              return const SizedBox.shrink();
+            return GestureDetector(
+              onTap: () => context.push('/leaderboard'),
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: surface,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.2),
                   ),
                 ),
-                const SizedBox(width: 12),
-                // Title + progress
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(stats.title,
-                          style: AppTypography.label.copyWith(
-                              color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 13)),
-                      const SizedBox(height: 5),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
-                        child: LinearProgressIndicator(
-                          value: stats.levelProgress,
-                          backgroundColor: surface2,
-                          valueColor: const AlwaysStoppedAnimation(AppColors.gold),
-                          minHeight: 4,
+                child: Row(
+                  children: [
+                    // Level circle
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.gold.withValues(alpha: 0.2),
+                            AppColors.gold.withValues(alpha: 0.05),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: AppColors.gold.withValues(alpha: 0.4),
+                          width: 2,
                         ),
                       ),
-                      const SizedBox(height: 3),
-                      Text('${stats.totalXp} / ${stats.xpForNextLevel} XP',
-                          style: AppTypography.caption.copyWith(color: subColor, fontSize: 10)),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                // Streak + XP compact
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    if (stats.currentStreak > 0)
-                      _MiniChip(
-                        icon: LucideIcons.flame,
-                        text: '${stats.currentStreak}d',
-                        color: Colors.orange.shade300,
+                      child: Center(
+                        child: Text(
+                          '${stats.level}',
+                          style: AppTypography.heading3.copyWith(
+                            color: AppColors.gold,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
-                    if (stats.currentStreak > 0) const SizedBox(height: 4),
-                    if (stats.freeLives > 0)
-                      _MiniChip(
-                        icon: LucideIcons.heart,
-                        text: '${stats.freeLives}',
-                        color: const Color(0xFF81C784),
+                    ),
+                    const SizedBox(width: 12),
+                    // Title + progress
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            stats.title,
+                            style: AppTypography.label.copyWith(
+                              color: AppColors.gold,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(3),
+                            child: LinearProgressIndicator(
+                              value: stats.levelProgress,
+                              backgroundColor: surface2,
+                              valueColor: const AlwaysStoppedAnimation(
+                                AppColors.gold,
+                              ),
+                              minHeight: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            '${stats.totalXp} / ${stats.xpForNextLevel} XP',
+                            style: AppTypography.caption.copyWith(
+                              color: subColor,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(width: 10),
+                    // Streak + XP compact
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (stats.currentStreak > 0)
+                          _MiniChip(
+                            icon: LucideIcons.flame,
+                            text: '${stats.currentStreak}d',
+                            color: Colors.orange.shade300,
+                          ),
+                        if (stats.currentStreak > 0) const SizedBox(height: 4),
+                        if (stats.freeLives > 0)
+                          _MiniChip(
+                            icon: LucideIcons.heart,
+                            text: '${stats.freeLives}',
+                            color: const Color(0xFF81C784),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(LucideIcons.chevronRight, size: 14, color: subColor),
                   ],
                 ),
-                const SizedBox(width: 6),
-                Icon(LucideIcons.chevronRight, size: 14, color: subColor),
-              ],
-            ),
-          ),
-        ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1);
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-    );
+              ),
+            ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1);
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
+        );
   }
 }
 
@@ -755,7 +924,11 @@ class _MiniChip extends StatelessWidget {
   final String text;
   final Color color;
 
-  const _MiniChip({required this.icon, required this.text, required this.color});
+  const _MiniChip({
+    required this.icon,
+    required this.text,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -764,9 +937,14 @@ class _MiniChip extends StatelessWidget {
       children: [
         Icon(icon, size: 12, color: color),
         const SizedBox(width: 3),
-        Text(text,
-            style: AppTypography.caption.copyWith(
-                color: color, fontWeight: FontWeight.bold, fontSize: 11)),
+        Text(
+          text,
+          style: AppTypography.caption.copyWith(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 11,
+          ),
+        ),
       ],
     );
   }

@@ -22,8 +22,9 @@ class ActivitiesScreen extends ConsumerWidget {
     final favorites = ref.watch(activityFavoritesProvider);
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
       body: CustomScrollView(
         slivers: [
           // ── App Bar ──
@@ -32,14 +33,17 @@ class ActivitiesScreen extends ConsumerWidget {
             elevation: 0,
             floating: true,
             leading: IconButton(
-              icon: const Icon(LucideIcons.arrowLeft,
-                  color: AppColors.celestialBlue),
+              icon: const Icon(
+                LucideIcons.arrowLeft,
+                color: AppColors.celestialBlue,
+              ),
               onPressed: () => context.pop(),
             ),
             title: Text(
               'Dinâmicas Jovem',
-              style: AppTypography.heading3
-                  .copyWith(color: AppColors.celestialBlue),
+              style: AppTypography.heading3.copyWith(
+                color: AppColors.celestialBlue,
+              ),
             ),
             centerTitle: true,
           ),
@@ -48,12 +52,16 @@ class ActivitiesScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, AppSpacing.md),
+                AppSpacing.lg,
+                AppSpacing.sm,
+                AppSpacing.lg,
+                AppSpacing.md,
+              ),
               child: _WeeklyFeaturedCard(
                 activity: weeklyActivity,
                 isDark: isDark,
-                onTap: () => context.push('/activity-detail',
-                    extra: weeklyActivity),
+                onTap: () =>
+                    context.push('/activity-detail', extra: weeklyActivity),
               ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.1, end: 0),
             ),
           ),
@@ -64,10 +72,9 @@ class ActivitiesScreen extends ConsumerWidget {
               height: 44,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 itemCount: ActivityCategory.values.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const SizedBox(width: AppSpacing.sm),
                 itemBuilder: (context, index) {
                   final cat = ActivityCategory.values[index];
@@ -76,56 +83,48 @@ class ActivitiesScreen extends ConsumerWidget {
                     category: cat,
                     isSelected: isSelected,
                     isDark: isDark,
-                    onTap: () => ref
-                        .read(selectedCategoryProvider.notifier)
-                        .select(cat),
+                    onTap: () =>
+                        ref.read(selectedCategoryProvider.notifier).select(cat),
                   );
                 },
               ),
             ),
           ),
 
-          const SliverToBoxAdapter(
-              child: SizedBox(height: AppSpacing.lg)),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
 
           // ── Activities List ──
           SliverPadding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final activity = activities[index];
-                  final isFav = favorites.contains(activity.id);
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: _ActivityCard(
-                      activity: activity,
-                      isDark: isDark,
-                      isFavorite: isFav,
-                      onTap: () => context.push(
-                          '/activity-detail',
-                          extra: activity),
-                      onFavoriteTap: () => ref
-                          .read(activityFavoritesProvider.notifier)
-                          .toggle(activity.id),
-                    )
-                        .animate()
-                        .fadeIn(
-                            duration: 400.ms,
-                            delay: (50 * index).ms)
-                        .slideX(begin: 0.05, end: 0),
-                  );
-                },
-                childCount: activities.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final activity = activities[index];
+                final isFav = favorites.contains(activity.id);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child:
+                      _ActivityCard(
+                            activity: activity,
+                            isDark: isDark,
+                            isFavorite: isFav,
+                            onTap: () => context.push(
+                              '/activity-detail',
+                              extra: activity,
+                            ),
+                            onFavoriteTap: () => ref
+                                .read(activityFavoritesProvider.notifier)
+                                .toggle(activity.id),
+                          )
+                          .animate()
+                          .fadeIn(duration: 400.ms, delay: (50 * index).ms)
+                          .slideX(begin: 0.05, end: 0),
+                );
+              }, childCount: activities.length),
             ),
           ),
 
           // Bottom safe area
-          const SliverToBoxAdapter(
-              child: SizedBox(height: 100)),
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),
     );
@@ -172,17 +171,21 @@ class _WeeklyFeaturedCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: activity.category.color.withValues(alpha: 0.2),
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radiusPill),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(LucideIcons.sparkles,
-                          size: 12, color: activity.category.color),
+                      Icon(
+                        LucideIcons.sparkles,
+                        size: 12,
+                        color: activity.category.color,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         'Dinâmica da Semana',
@@ -224,18 +227,22 @@ class _WeeklyFeaturedCard extends StatelessWidget {
             Row(
               children: [
                 _InfoChip(
-                    icon: LucideIcons.clock,
-                    text: activity.duration,
-                    isDark: isDark),
+                  icon: LucideIcons.clock,
+                  text: activity.duration,
+                  isDark: isDark,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 _InfoChip(
-                    icon: LucideIcons.users,
-                    text: activity.groupSize.label,
-                    isDark: isDark),
+                  icon: LucideIcons.users,
+                  text: activity.groupSize.label,
+                  isDark: isDark,
+                ),
                 const Spacer(),
-                Icon(LucideIcons.arrowRight,
-                    size: 18,
-                    color: activity.category.color),
+                Icon(
+                  LucideIcons.arrowRight,
+                  size: 18,
+                  color: activity.category.color,
+                ),
               ],
             ),
           ],
@@ -280,8 +287,7 @@ class _ActivityCard extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     color: activity.category.color.withValues(alpha: 0.15),
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radiusSm),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Icon(
                     activity.category.icon,
@@ -326,8 +332,8 @@ class _ActivityCard extends StatelessWidget {
                       color: isFavorite
                           ? AppColors.error
                           : (isDark
-                              ? AppColors.darkTextDisabled
-                              : AppColors.lightTextDisabled),
+                                ? AppColors.darkTextDisabled
+                                : AppColors.lightTextDisabled),
                       size: 20,
                     ),
                   ),
@@ -350,17 +356,21 @@ class _ActivityCard extends StatelessWidget {
             Row(
               children: [
                 _InfoChip(
-                    icon: LucideIcons.clock,
-                    text: activity.duration,
-                    isDark: isDark),
+                  icon: LucideIcons.clock,
+                  text: activity.duration,
+                  isDark: isDark,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 _InfoChip(
-                    icon: LucideIcons.users,
-                    text: activity.groupSize.label,
-                    isDark: isDark),
+                  icon: LucideIcons.users,
+                  text: activity.groupSize.label,
+                  isDark: isDark,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 _DifficultyBadge(
-                    difficulty: activity.difficulty, isDark: isDark),
+                  difficulty: activity.difficulty,
+                  isDark: isDark,
+                ),
               ],
             ),
           ],
@@ -395,16 +405,14 @@ class _CategoryChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? category.color.withValues(alpha: 0.2)
-              : (isDark
-                  ? AppColors.darkSurface
-                  : AppColors.lightSurface),
+              : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
           borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
           border: Border.all(
             color: isSelected
                 ? category.color.withValues(alpha: 0.5)
                 : (isDark
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.black.withValues(alpha: 0.06)),
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.black.withValues(alpha: 0.06)),
             width: 1,
           ),
         ),
@@ -417,8 +425,8 @@ class _CategoryChip extends StatelessWidget {
               color: isSelected
                   ? category.color
                   : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary),
             ),
             const SizedBox(width: 6),
             Text(
@@ -427,10 +435,9 @@ class _CategoryChip extends StatelessWidget {
                 color: isSelected
                     ? category.color
                     : (isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary),
-                fontWeight:
-                    isSelected ? FontWeight.w600 : FontWeight.w400,
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary),
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ],
@@ -464,10 +471,7 @@ class _InfoChip extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           text,
-          style: AppTypography.caption.copyWith(
-            color: color,
-            fontSize: 11,
-          ),
+          style: AppTypography.caption.copyWith(color: color, fontSize: 11),
         ),
       ],
     );
@@ -476,10 +480,7 @@ class _InfoChip extends StatelessWidget {
 
 // ── Difficulty Badge ──
 class _DifficultyBadge extends StatelessWidget {
-  const _DifficultyBadge({
-    required this.difficulty,
-    required this.isDark,
-  });
+  const _DifficultyBadge({required this.difficulty, required this.isDark});
 
   final ActivityDifficulty difficulty;
   final bool isDark;

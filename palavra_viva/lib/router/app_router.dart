@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_typography.dart';
 import '../core/theme/app_spacing.dart';
+import '../core/services/gamification_service.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/bible/presentation/bible_screen.dart';
 import '../features/prayer/presentation/prayer_screen.dart';
@@ -180,10 +181,27 @@ final appRouter = GoRouter(
   ],
 );
 
-class _ScaffoldWithNavBar extends StatelessWidget {
+class _ScaffoldWithNavBar extends StatefulWidget {
   const _ScaffoldWithNavBar({required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
+
+  @override
+  State<_ScaffoldWithNavBar> createState() => _ScaffoldWithNavBarState();
+}
+
+class _ScaffoldWithNavBarState extends State<_ScaffoldWithNavBar> {
+  @override
+  void initState() {
+    super.initState();
+    _logAppOpen();
+  }
+
+  Future<void> _logAppOpen() async {
+    try {
+      await GamificationService().logActivity('app_open', xp: 0);
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +210,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
-      body: navigationShell,
+      body: widget.navigationShell,
       bottomNavigationBar: keyboardOpen ? const SizedBox.shrink() : Container(
         margin: const EdgeInsets.only(
           left: AppSpacing.md,
@@ -237,37 +255,37 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                       child: _NavItem(
                         icon: LucideIcons.bookOpen,
                         label: 'Bíblia',
-                        isActive: navigationShell.currentIndex == 0,
-                        onTap: () => navigationShell.goBranch(0, initialLocation: navigationShell.currentIndex == 0),
+                        isActive: widget.navigationShell.currentIndex == 0,
+                        onTap: () => widget.navigationShell.goBranch(0, initialLocation: widget.navigationShell.currentIndex == 0),
                       ),
                     ),
                     Expanded(
                       child: _NavItem(
                         icon: LucideIcons.heart,
                         label: 'Orar',
-                        isActive: navigationShell.currentIndex == 1,
-                        onTap: () => navigationShell.goBranch(1, initialLocation: navigationShell.currentIndex == 1),
+                        isActive: widget.navigationShell.currentIndex == 1,
+                        onTap: () => widget.navigationShell.goBranch(1, initialLocation: widget.navigationShell.currentIndex == 1),
                       ),
                     ),
                     _CenterActionItem(
                       icon: LucideIcons.home,
-                      isActive: navigationShell.currentIndex == 2,
-                      onTap: () => navigationShell.goBranch(2, initialLocation: navigationShell.currentIndex == 2),
+                      isActive: widget.navigationShell.currentIndex == 2,
+                      onTap: () => widget.navigationShell.goBranch(2, initialLocation: widget.navigationShell.currentIndex == 2),
                     ),
                     Expanded(
                       child: _NavItem(
                         icon: LucideIcons.edit,
                         label: 'Diário',
-                        isActive: navigationShell.currentIndex == 3,
-                        onTap: () => navigationShell.goBranch(3, initialLocation: navigationShell.currentIndex == 3),
+                        isActive: widget.navigationShell.currentIndex == 3,
+                        onTap: () => widget.navigationShell.goBranch(3, initialLocation: widget.navigationShell.currentIndex == 3),
                       ),
                     ),
                     Expanded(
                       child: _NavItem(
                         icon: LucideIcons.messageSquare,
                         label: 'Palavra.AI',
-                        isActive: navigationShell.currentIndex == 4,
-                        onTap: () => navigationShell.goBranch(4, initialLocation: navigationShell.currentIndex == 4),
+                        isActive: widget.navigationShell.currentIndex == 4,
+                        onTap: () => widget.navigationShell.goBranch(4, initialLocation: widget.navigationShell.currentIndex == 4),
                       ),
                     ),
                   ],

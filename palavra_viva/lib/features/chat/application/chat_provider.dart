@@ -65,7 +65,29 @@ class ChatNotifier extends Notifier<ChatState> {
     // Background sync from Supabase
     _syncFromSupabase();
 
-    return localState;
+    // Auto-start new conversation if the last one is stale (>1 hour)
+    return _autoNewIfStale(localState);
+  }
+
+  /// If the active conversation's last update was >1 hour ago, start fresh
+  ChatState _autoNewIfStale(ChatState currentState) {
+    final active = currentState.activeConversation;
+    final timeSinceUpdate = DateTime.now().difference(active.updatedAt);
+
+    // Only auto-new if conversation has user messages AND is older than 1 hour
+    final hasUserMessages = active.messages.any((m) => m.isUser);
+    if (hasUserMessages && timeSinceUpdate.inMinutes >= 60) {
+      final fresh = _createFreshConversation();
+      final updated = [fresh, ...currentState.conversations];
+      _persistLocal(updated, fresh.id);
+
+      return ChatState(
+        activeConversation: fresh,
+        conversations: updated,
+      );
+    }
+
+    return currentState;
   }
 
   ChatState _loadFromHive() {

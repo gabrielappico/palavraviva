@@ -14,13 +14,10 @@ class OpenAiService {
 
   String get _edgeFunctionUrl {
     final baseUrl = dotenv.env['SUPABASE_URL'] ?? '';
-    return '$baseUrl/functions/v1/openai-proxy';
+    return '$baseUrl/functions/v1/ai-chat';
   }
 
   String get _anonKey => dotenv.env['SUPABASE_ANON_KEY'] ?? '';
-
-  String? get _accessToken =>
-      Supabase.instance.client.auth.currentSession?.accessToken;
 
   /// Sends a chat completion request through the Edge Function proxy.
   ///
@@ -34,11 +31,6 @@ class OpenAiService {
     String model = 'gpt-4o-mini',
     Map<String, dynamic>? responseFormat,
   }) async {
-    final token = _accessToken;
-    if (token == null) {
-      throw Exception('User not authenticated');
-    }
-
     final body = <String, dynamic>{
       'messages': messages,
       'model': model,
@@ -52,7 +44,7 @@ class OpenAiService {
       _edgeFunctionUrl,
       options: Options(headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $_anonKey',
         'apikey': _anonKey,
       }),
       data: body,

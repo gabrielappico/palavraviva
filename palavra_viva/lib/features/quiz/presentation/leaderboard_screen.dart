@@ -39,7 +39,9 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
     final currentUserId = Supabase.instance.client.auth.currentUser?.id;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -47,14 +49,22 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           icon: const Icon(LucideIcons.arrowLeft, color: AppColors.gold),
           onPressed: () => context.pop(),
         ),
-        title: Text('🏆 Ranking', style: AppTypography.heading3.copyWith(color: AppColors.gold)),
+        title: Text(
+          '🏆 Ranking',
+          style: AppTypography.heading3.copyWith(color: AppColors.gold),
+        ),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: AppColors.gold,
           labelColor: AppColors.gold,
-          unselectedLabelColor: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-          tabs: const [Tab(text: 'Semanal'), Tab(text: 'Geral')],
+          unselectedLabelColor: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
+          tabs: const [
+            Tab(text: 'Semanal'),
+            Tab(text: 'Geral'),
+          ],
         ),
       ),
       body: SafeArea(
@@ -85,83 +95,124 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   Widget _buildUserCard(bool isDark) {
     final surface = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final surface2 = isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
-    final subColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final subColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
-    return ref.watch(userStatsProvider).when(
-      data: (stats) => Container(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(color: AppColors.gold.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48, height: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.gold.withValues(alpha: 0.1),
-              ),
-              child: Center(child: Text(stats.titleEmoji, style: const TextStyle(fontSize: 24))),
+    return ref
+        .watch(userStatsProvider)
+        .when(
+          data: (stats) => Container(
+            margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              border: Border.all(color: AppColors.gold.withValues(alpha: 0.25)),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(stats.displayName,
-                      style: AppTypography.title.copyWith(
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
-                  const SizedBox(height: 2),
-                  Text('Nv. ${stats.level} · ${stats.title} · ${stats.totalXp} XP',
-                      style: AppTypography.caption.copyWith(color: AppColors.gold, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 6),
-                  Row(
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.gold.withValues(alpha: 0.1),
+                  ),
+                  child: Center(
+                    child: Text(
+                      stats.titleEmoji,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(3),
-                          child: LinearProgressIndicator(
-                            value: stats.levelProgress,
-                            backgroundColor: surface2,
-                            valueColor: const AlwaysStoppedAnimation(AppColors.gold),
-                            minHeight: 5,
-                          ),
+                      Text(
+                        stats.displayName,
+                        style: AppTypography.title.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Text('${stats.totalXp} / ${stats.xpForNextLevel} XP',
-                          style: AppTypography.caption.copyWith(color: subColor, fontSize: 9, fontWeight: FontWeight.w500)),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Nv. ${stats.level} · ${stats.title} · ${stats.totalXp} XP',
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.gold,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(3),
+                              child: LinearProgressIndicator(
+                                value: stats.levelProgress,
+                                backgroundColor: surface2,
+                                valueColor: const AlwaysStoppedAnimation(
+                                  AppColors.gold,
+                                ),
+                                minHeight: 5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${stats.totalXp} / ${stats.xpForNextLevel} XP',
+                            style: AppTypography.caption.copyWith(
+                              color: subColor,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('🕊️', style: TextStyle(fontSize: 14)),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${stats.currentStreak}',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.gold,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.gold.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Text('🕊️', style: TextStyle(fontSize: 14)),
-                const SizedBox(width: 4),
-                Text('${stats.currentStreak}',
-                    style: AppTypography.label.copyWith(color: AppColors.gold, fontWeight: FontWeight.bold)),
-              ]),
+          ).animate().fadeIn().slideY(begin: -0.1),
+          loading: () => const Padding(
+            padding: EdgeInsets.all(AppSpacing.xl),
+            child: Center(
+              child: CircularProgressIndicator(color: AppColors.gold),
             ),
-          ],
-        ),
-      ).animate().fadeIn().slideY(begin: -0.1),
-      loading: () => const Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
-        child: Center(child: CircularProgressIndicator(color: AppColors.gold)),
-      ),
-      error: (_, __) => const SizedBox.shrink(),
-    );
+          ),
+          error: (_, _) => const SizedBox.shrink(),
+        );
   }
 
   // ══════════════════════════════════════════════
@@ -171,26 +222,48 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   Widget _buildStatsRow(bool isDark) {
     final surface = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final surface2 = isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
-    final subColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final subColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
-    return ref.watch(userStatsProvider).when(
-      data: (stats) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              _StatChip(value: '${stats.totalXp}', label: 'XP TOTAL', surface: surface, border: surface2, subColor: subColor),
-              const SizedBox(width: 8),
-              _StatChip(value: '${stats.currentStreak}', label: 'STREAK', surface: surface, border: surface2, subColor: subColor),
-              const SizedBox(width: 8),
-              _StatChip(value: '${stats.level}', label: 'NÍVEL', surface: surface, border: surface2, subColor: subColor),
-            ],
-          ),
-        ).animate().fadeIn(delay: 100.ms);
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-    );
+    return ref
+        .watch(userStatsProvider)
+        .when(
+          data: (stats) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  _StatChip(
+                    value: '${stats.totalXp}',
+                    label: 'XP TOTAL',
+                    surface: surface,
+                    border: surface2,
+                    subColor: subColor,
+                  ),
+                  const SizedBox(width: 8),
+                  _StatChip(
+                    value: '${stats.currentStreak}',
+                    label: 'STREAK',
+                    surface: surface,
+                    border: surface2,
+                    subColor: subColor,
+                  ),
+                  const SizedBox(width: 8),
+                  _StatChip(
+                    value: '${stats.level}',
+                    label: 'NÍVEL',
+                    surface: surface,
+                    border: surface2,
+                    subColor: subColor,
+                  ),
+                ],
+              ),
+            ).animate().fadeIn(delay: 100.ms);
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
+        );
   }
 
   // ══════════════════════════════════════════════
@@ -208,7 +281,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
       if (data != null) {
         total = data.length;
         for (int i = 0; i < data.length; i++) {
-          if (data[i].userId == currentUserId) { myPos = i + 1; break; }
+          if (data[i].userId == currentUserId) {
+            myPos = i + 1;
+            break;
+          }
         }
       }
     } else {
@@ -216,7 +292,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
       if (data != null) {
         total = data.length;
         for (int i = 0; i < data.length; i++) {
-          if (data[i].userId == currentUserId) { myPos = i + 1; break; }
+          if (data[i].userId == currentUserId) {
+            myPos = i + 1;
+            break;
+          }
         }
       }
     }
@@ -237,8 +316,14 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           const Text('📍', style: TextStyle(fontSize: 13)),
           const SizedBox(width: 6),
           Text(
-            myPos > 0 ? 'Sua posição: #$myPos de $total' : '$total participantes',
-            style: AppTypography.label.copyWith(color: AppColors.gold, fontWeight: FontWeight.w600, fontSize: 12),
+            myPos > 0
+                ? 'Sua posição: #$myPos de $total'
+                : '$total participantes',
+            style: AppTypography.label.copyWith(
+              color: AppColors.gold,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -250,63 +335,77 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   // ══════════════════════════════════════════════
 
   Widget _buildWeeklyTab(bool isDark, String? currentUserId) {
-    return ref.watch(weeklyLeaderboardProvider).when(
-      data: (entries) {
-        if (entries.isEmpty) {
-          return _buildEmpty(isDark, 'Nenhum quiz jogado esta semana.\nSeja o primeiro!');
-        }
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: entries.length,
-          itemBuilder: (context, i) {
-            final entry = entries[i];
-            final isMe = entry.userId == currentUserId;
-            return _LeaderboardTile(
-              rank: i + 1,
-              name: entry.displayName,
-              xp: entry.weeklyXp,
-              streak: entry.currentStreak,
-              title: entry.title,
-              level: entry.level,
-              isCurrentUser: isMe,
-              isDark: isDark,
-            ).animate().fadeIn(delay: (35 * i).ms).slideX(begin: 0.04);
+    return ref
+        .watch(weeklyLeaderboardProvider)
+        .when(
+          data: (entries) {
+            if (entries.isEmpty) {
+              return _buildEmpty(
+                isDark,
+                'Nenhum quiz jogado esta semana.\nSeja o primeiro!',
+              );
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: entries.length,
+              itemBuilder: (context, i) {
+                final entry = entries[i];
+                final isMe = entry.userId == currentUserId;
+                return _LeaderboardTile(
+                  rank: i + 1,
+                  name: entry.displayName,
+                  xp: entry.weeklyXp,
+                  streak: entry.currentStreak,
+                  title: entry.title,
+                  level: entry.level,
+                  isCurrentUser: isMe,
+                  isDark: isDark,
+                ).animate().fadeIn(delay: (35 * i).ms).slideX(begin: 0.04);
+              },
+            );
           },
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          ),
+          error: (_, _) => _buildEmpty(isDark, 'Erro ao carregar ranking'),
         );
-      },
-      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.gold)),
-      error: (_, __) => _buildEmpty(isDark, 'Erro ao carregar ranking'),
-    );
   }
 
   Widget _buildAllTimeTab(bool isDark, String? currentUserId) {
-    return ref.watch(allTimeLeaderboardProvider).when(
-      data: (users) {
-        if (users.isEmpty) {
-          return _buildEmpty(isDark, 'Nenhum jogador ainda.\nComece a jogar!');
-        }
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: users.length,
-          itemBuilder: (context, i) {
-            final user = users[i];
-            final isMe = user.userId == currentUserId;
-            return _LeaderboardTile(
-              rank: i + 1,
-              name: user.displayName,
-              xp: user.totalXp,
-              streak: user.currentStreak,
-              title: user.title,
-              level: user.level,
-              isCurrentUser: isMe,
-              isDark: isDark,
-            ).animate().fadeIn(delay: (35 * i).ms).slideX(begin: 0.04);
+    return ref
+        .watch(allTimeLeaderboardProvider)
+        .when(
+          data: (users) {
+            if (users.isEmpty) {
+              return _buildEmpty(
+                isDark,
+                'Nenhum jogador ainda.\nComece a jogar!',
+              );
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: users.length,
+              itemBuilder: (context, i) {
+                final user = users[i];
+                final isMe = user.userId == currentUserId;
+                return _LeaderboardTile(
+                  rank: i + 1,
+                  name: user.displayName,
+                  xp: user.totalXp,
+                  streak: user.currentStreak,
+                  title: user.title,
+                  level: user.level,
+                  isCurrentUser: isMe,
+                  isDark: isDark,
+                ).animate().fadeIn(delay: (35 * i).ms).slideX(begin: 0.04);
+              },
+            );
           },
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          ),
+          error: (_, _) => _buildEmpty(isDark, 'Erro ao carregar ranking'),
         );
-      },
-      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.gold)),
-      error: (_, __) => _buildEmpty(isDark, 'Erro ao carregar ranking'),
-    );
   }
 
   Widget _buildEmpty(bool isDark, String msg) {
@@ -318,9 +417,15 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           children: [
             const Text('🏆', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 16),
-            Text(msg, textAlign: TextAlign.center,
-                style: AppTypography.body.copyWith(
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+            Text(
+              msg,
+              textAlign: TextAlign.center,
+              style: AppTypography.body.copyWith(
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
           ],
         ),
       ),
@@ -340,8 +445,10 @@ class _StatChip extends StatelessWidget {
   final Color subColor;
 
   const _StatChip({
-    required this.value, required this.label,
-    required this.surface, required this.border,
+    required this.value,
+    required this.label,
+    required this.surface,
+    required this.border,
     required this.subColor,
   });
 
@@ -357,11 +464,24 @@ class _StatChip extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(value,
-                style: AppTypography.heading3.copyWith(color: AppColors.gold, fontSize: 16, fontWeight: FontWeight.w800)),
+            Text(
+              value,
+              style: AppTypography.heading3.copyWith(
+                color: AppColors.gold,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             const SizedBox(height: 2),
-            Text(label,
-                style: AppTypography.caption.copyWith(color: subColor, fontSize: 9, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
+            Text(
+              label,
+              style: AppTypography.caption.copyWith(
+                color: subColor,
+                fontSize: 9,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
+            ),
           ],
         ),
       ),
@@ -384,17 +504,26 @@ class _LeaderboardTile extends StatelessWidget {
   final bool isDark;
 
   const _LeaderboardTile({
-    required this.rank, required this.name, required this.xp,
-    required this.streak, required this.title, required this.level,
-    required this.isCurrentUser, required this.isDark,
+    required this.rank,
+    required this.name,
+    required this.xp,
+    required this.streak,
+    required this.title,
+    required this.level,
+    required this.isCurrentUser,
+    required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
     final surface = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final surface2 = isDark ? AppColors.darkSurface2 : AppColors.lightSurface2;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final subColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final subColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     final String rankDisplay;
     if (rank == 1) {
@@ -414,40 +543,69 @@ class _LeaderboardTile extends StatelessWidget {
         color: isCurrentUser ? AppColors.gold.withValues(alpha: 0.08) : surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(
-          color: isCurrentUser ? AppColors.gold.withValues(alpha: 0.3) : surface2,
+          color: isCurrentUser
+              ? AppColors.gold.withValues(alpha: 0.3)
+              : surface2,
         ),
       ),
       child: Row(
         children: [
           SizedBox(
             width: 32,
-            child: Text(rankDisplay,
-                textAlign: TextAlign.center,
-                style: rank <= 3
-                    ? const TextStyle(fontSize: 20)
-                    : AppTypography.label.copyWith(color: subColor, fontWeight: FontWeight.w600)),
+            child: Text(
+              rankDisplay,
+              textAlign: TextAlign.center,
+              style: rank <= 3
+                  ? const TextStyle(fontSize: 20)
+                  : AppTypography.label.copyWith(
+                      color: subColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(isCurrentUser ? '$name (Você)' : name,
-                    style: AppTypography.body.copyWith(
-                        color: isCurrentUser ? AppColors.gold : textColor,
-                        fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.w500,
-                        fontSize: 13)),
-                Text('Nv.$level · $title',
-                    style: AppTypography.caption.copyWith(color: subColor, fontSize: 10)),
+                Text(
+                  isCurrentUser ? '$name (Você)' : name,
+                  style: AppTypography.body.copyWith(
+                    color: isCurrentUser ? AppColors.gold : textColor,
+                    fontWeight: isCurrentUser
+                        ? FontWeight.bold
+                        : FontWeight.w500,
+                    fontSize: 13,
+                  ),
+                ),
+                Text(
+                  'Nv.$level · $title',
+                  style: AppTypography.caption.copyWith(
+                    color: subColor,
+                    fontSize: 10,
+                  ),
+                ),
               ],
             ),
           ),
           if (streak > 0) ...[
-            Text('🕊️$streak', style: AppTypography.caption.copyWith(color: subColor, fontSize: 11)),
+            Text(
+              '🕊️$streak',
+              style: AppTypography.caption.copyWith(
+                color: subColor,
+                fontSize: 11,
+              ),
+            ),
             const SizedBox(width: 10),
           ],
-          Text('${_formatXp(xp)} XP',
-              style: AppTypography.label.copyWith(color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 13)),
+          Text(
+            '${_formatXp(xp)} XP',
+            style: AppTypography.label.copyWith(
+              color: AppColors.gold,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
         ],
       ),
     );
