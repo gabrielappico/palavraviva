@@ -405,54 +405,64 @@ class _QuizSetupState extends ConsumerState<_QuizSetup> {
         ),
         const SizedBox(height: AppSpacing.lg),
         Expanded(
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.6,
-            ),
-            itemCount: quizCategories.length,
-            itemBuilder: (context, i) {
-              final cat = quizCategories[i];
-              final bg = isDark
-                  ? AppColors.darkSurface
-                  : AppColors.lightSurface;
-              final border = isDark
-                  ? AppColors.darkSurface2
-                  : AppColors.lightSurface2;
-
-              return InkWell(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                onTap: () {
-                  ref.read(quizProvider.notifier).selectCategory(cat);
-                  setState(() => _step = 1);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: bg,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    border: Border.all(color: border),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(cat.emoji, style: const TextStyle(fontSize: 24)),
-                      const SizedBox(height: 6),
-                      Text(
-                        cat.name,
-                        textAlign: TextAlign.center,
-                        style: AppTypography.caption.copyWith(
-                          color: textColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
+          child: Builder(
+            builder: (context) {
+              final textScale = MediaQuery.textScalerOf(context).scale(1.0);
+              final aspectRatio = textScale > 1.1 ? 1.3 : 1.6;
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: aspectRatio,
                 ),
-              ).animate().fadeIn(delay: (50 * i).ms).slideY(begin: 0.1);
+                itemCount: quizCategories.length,
+                itemBuilder: (context, i) {
+                  final cat = quizCategories[i];
+                  final bg = isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface;
+                  final border = isDark
+                      ? AppColors.darkSurface2
+                      : AppColors.lightSurface2;
+
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    onTap: () {
+                      ref.read(quizProvider.notifier).selectCategory(cat);
+                      setState(() => _step = 1);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: bg,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        border: Border.all(color: border),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(cat.emoji, style: const TextStyle(fontSize: 24)),
+                          const SizedBox(height: 6),
+                          Flexible(
+                            child: Text(
+                              cat.name,
+                              textAlign: TextAlign.center,
+                              style: AppTypography.caption.copyWith(
+                                color: textColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ).animate().fadeIn(delay: (50 * i).ms).slideY(begin: 0.1);
+                },
+              );
             },
           ),
         ),

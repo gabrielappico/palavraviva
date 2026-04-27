@@ -524,13 +524,15 @@ class _FeaturesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1.0);
+    final aspectRatio = textScale > 1.1 ? 0.75 : 0.85;
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 20,
       crossAxisSpacing: 20,
-      childAspectRatio: 0.85,
+      childAspectRatio: aspectRatio,
       children: [
         _FeatureCard(
           title: 'Palavra.AI',
@@ -670,10 +672,12 @@ class _FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textScale = MediaQuery.textScalerOf(context).scale(1.0);
+    final cardPadding = textScale > 1.1 ? 16.0 : 24.0;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
           borderRadius: BorderRadius.circular(24),
@@ -695,29 +699,36 @@ class _FeatureCard extends StatelessWidget {
               ),
               child: Center(child: icon),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTypography.title.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: AppTypography.title.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: AppTypography.caption.copyWith(
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                    height: 1.2,
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: AppTypography.caption.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                      height: 1.2,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

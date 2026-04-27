@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Centralized service for all OpenAI calls.
 /// Routes through Supabase Edge Function so the API key
@@ -31,10 +30,7 @@ class OpenAiService {
     String model = 'gpt-4o-mini',
     Map<String, dynamic>? responseFormat,
   }) async {
-    final body = <String, dynamic>{
-      'messages': messages,
-      'model': model,
-    };
+    final body = <String, dynamic>{'messages': messages, 'model': model};
 
     if (responseFormat != null) {
       body['response_format'] = responseFormat;
@@ -42,11 +38,13 @@ class OpenAiService {
 
     final response = await _dio.post(
       _edgeFunctionUrl,
-      options: Options(headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $_anonKey',
-        'apikey': _anonKey,
-      }),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_anonKey',
+          'apikey': _anonKey,
+        },
+      ),
       data: body,
     );
 
