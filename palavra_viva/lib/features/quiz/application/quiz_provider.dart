@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../../core/services/openai_service.dart';
 import '../../../core/services/gamification_service.dart';
 import '../../../core/services/gamification_models.dart';
 import '../../../core/providers/gamification_provider.dart';
@@ -114,7 +113,7 @@ const quizCategories = [
 
 // --- State ---
 
-String get _openAiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
+
 
 class QuizState {
   final QuizStatus status;
@@ -191,14 +190,14 @@ class QuizState {
 final quizProvider = NotifierProvider<QuizNotifier, QuizState>(QuizNotifier.new);
 
 class QuizNotifier extends Notifier<QuizState> {
-  late Dio _dio;
   late GamificationService _gamification;
+  late OpenAiService _openAi;
   Timer? _timer;
 
   @override
   QuizState build() {
-    _dio = Dio();
     _gamification = GamificationService();
+    _openAi = OpenAiService();
     ref.onDispose(() => _timer?.cancel());
     return const QuizState();
   }
@@ -237,28 +236,14 @@ class QuizNotifier extends Notifier<QuizState> {
       timeRemaining: 15,
     );
 
-    if (_openAiApiKey.isEmpty) {
-      state = state.copyWith(
-        status: QuizStatus.idle,
-        error: 'Chave da OpenAI não encontrada. Verifique o arquivo .env.',
-      );
-      return;
-    }
+
 
     try {
-      final response = await _dio.post(
-        'https://api.openai.com/v1/chat/completions',
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_openAiApiKey',
-        }),
-        data: {
-          'model': 'gpt-4o-mini',
-          'response_format': {'type': 'json_object'},
-          'messages': [
-            {
-              'role': 'system',
-              'content': '''Você é um teólogo criador de quizzes bíblicos.
+      final response = await _openAi.chatCompletion(
+        messages: [
+          {
+            'role': 'system',
+            'content': '''Você é um teólogo criador de quizzes bíblicos.
 Objetivo: Criar $questionCount perguntas do nível "$difficulty" sobre ${category.prompt}.
 Formato de saída OBRIGATÓRIO (JSON puro com a raiz "questions"):
 {
@@ -273,17 +258,17 @@ Formato de saída OBRIGATÓRIO (JSON puro com a raiz "questions"):
 }
 A propriedade "correctIndex" deve ser um inteiro de 0 a 3 apontando para a resposta correta em "options".
 Varie a posição da resposta correta. Não coloque sempre no index 0.'''
-            },
-            {
-              'role': 'user',
-              'content':
-                  'Gere $questionCount perguntas bíblicas de dificuldade $difficulty sobre: ${category.name}.'
-            }
-          ],
-        },
+          },
+          {
+            'role': 'user',
+            'content':
+                'Gere $questionCount perguntas bíblicas de dificuldade $difficulty sobre: ${category.name}.'
+          }
+        ],
+        responseFormat: {'type': 'json_object'},
       );
 
-      final replyContent = response.data['choices'][0]['message']['content'];
+      final replyContent = response['choices'][0]['message']['content'];
       final Map<String, dynamic> parsedJson = jsonDecode(replyContent);
       final List<dynamic> questionsList = parsedJson['questions'] ?? [];
 
@@ -379,32 +364,24 @@ Varie a posição da resposta correta. Não coloque sempre no index 0.'''
     final difficulty = state.selectedDifficulty ?? 'Médio';
 
     try {
-      final response = await _dio.post(
-        'https://api.openai.com/v1/chat/completions',
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_openAiApiKey',
-        }),
-        data: {
-          'model': 'gpt-4o-mini',
-          'response_format': {'type': 'json_object'},
-          'messages': [
-            {
-              'role': 'system',
-              'content': '''Você é um teólogo criador de quizzes bíblicos.
+      final response = await _openAi.chatCompletion(
+        messages: [
+          {
+            'role': 'system',
+            'content': '''Você é um teólogo criador de quizzes bíblicos.
 Crie 5 perguntas do nível "$difficulty" sobre ${category.prompt}.
 Formato JSON: {"questions": [{"question": "...", "options": ["A","B","C","D"], "correctIndex": 0, "reference": "Livro X:Y"}]}
 Varie a posição da resposta correta.'''
-            },
-            {
-              'role': 'user',
-              'content': 'Mais 5 perguntas bíblicas de $difficulty sobre ${category.name}. Não repita perguntas anteriores.'
-            }
-          ],
-        },
+          },
+          {
+            'role': 'user',
+            'content': 'Mais 5 perguntas bíblicas de $difficulty sobre ${category.name}. Não repita perguntas anteriores.'
+          }
+        ],
+        responseFormat: {'type': 'json_object'},
       );
 
-      final replyContent = response.data['choices'][0]['message']['content'];
+      final replyContent = response['choices'][0]['message']['content'];
       final parsed = jsonDecode(replyContent);
       final newQuestions = (parsed['questions'] as List)
           .map((j) => QuizQuestion.fromJson(j))

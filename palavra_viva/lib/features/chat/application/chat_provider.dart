@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/services/openai_service.dart';
 import '../domain/chat_message.dart';
 import '../domain/chat_conversation.dart';
-
-String get _openAiApiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 
 final chatProvider = NotifierProvider<ChatNotifier, ChatState>(ChatNotifier.new);
 
@@ -46,7 +44,7 @@ class ChatState {
 }
 
 class ChatNotifier extends Notifier<ChatState> {
-  late Dio _dio;
+  late OpenAiService _openAi;
   static const _boxName = 'chatBox';
   static const _conversationsKey = 'conversations';
   static const _activeIdKey = 'activeConversationId';
@@ -59,7 +57,7 @@ class ChatNotifier extends Notifier<ChatState> {
 
   @override
   ChatState build() {
-    _dio = Dio();
+    _openAi = OpenAiService();
 
     // Load from Hive first (instant), then sync from Supabase in background
     final localState = _loadFromHive();
@@ -363,26 +361,18 @@ class ChatNotifier extends Notifier<ChatState> {
         };
       }).toList();
 
-      final response = await _dio.post(
-        'https://api.openai.com/v1/chat/completions',
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_openAiApiKey',
-        }),
-        data: {
-          'model': 'gpt-4o-mini',
-          'messages': [
-            {
-              'role': 'system',
-              'content':
-                  'Você é um conselheiro cristão e teológico solidário e acolhedor. Responda perguntas usando as escrituras sagradas para dar base aos seus aconselhamentos. Seja carinhoso e sempre sábio.'
-            },
-            ...historyParams,
-          ],
-        },
+      final response = await _openAi.chatCompletion(
+        messages: [
+          {
+            'role': 'system',
+            'content':
+                'Você é um conselheiro cristão e teológico solidário e acolhedor. Responda perguntas usando as escrituras sagradas para dar base aos seus aconselhamentos. Seja carinhoso e sempre sábio.'
+          },
+          ...historyParams,
+        ],
       );
 
-      final replyText = response.data['choices'][0]['message']['content'];
+      final replyText = response['choices'][0]['message']['content'];
       final aiMsg = ChatMessage(text: replyText, role: MessageRole.ai);
 
       final finalActive = state.activeConversation.copyWith(
@@ -404,14 +394,6 @@ class ChatNotifier extends Notifier<ChatState> {
       // Sync to Supabase in background
       _saveConversationToSupabase(finalActive);
     } catch (e) {
-      if (_openAiApiKey.isEmpty) {
-        state = state.copyWith(
-          isTyping: false,
-          error:
-              'Por favor, adicione sua chave de API OpenAI no arquivo `.env` para habilitar a IA.',
-        );
-        return;
-      }
       state = state.copyWith(
         isTyping: false,
         error:

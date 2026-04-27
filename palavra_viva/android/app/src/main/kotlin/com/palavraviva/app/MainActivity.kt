@@ -1,4 +1,4 @@
-package com.example.palavra_viva
+package com.palavraviva.app
 
 import io.flutter.embedding.android.FlutterActivity
 
